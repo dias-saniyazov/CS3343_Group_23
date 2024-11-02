@@ -1,0 +1,1 @@
+All our documents will be stored here. Project Plan, Project Report, Bug Report, Activity Log, etc
