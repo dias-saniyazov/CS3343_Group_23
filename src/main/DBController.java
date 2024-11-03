@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
 class DBController {
-    private final String DB_FILE = "db.json";
+    private final String DB_FILE = "data/db.json";
 
     boolean checkAvailability(MenuItem selectedVehicle) {
         return true;
