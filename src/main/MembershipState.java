@@ -1,3 +1,5 @@
-interface MembershipState {
-    int discount(int minutes);
+public enum MembershipState {
+    STANDARD,
+    PREMIUM,
+    SUSPENDED
 }

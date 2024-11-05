@@ -1,0 +1,16 @@
+[
+  {
+    "memberId": 1,
+    "memberState": "STANDARD",
+    "username": "disa",
+    "password": "123",
+    "orderHistory": []
+  },
+  {
+    "memberId": 1,
+    "memberState": "STANDARD",
+    "username": "dias",
+    "password": "dias123",
+    "orderHistory": []
+  }
+]

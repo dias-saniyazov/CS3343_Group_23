@@ -6,10 +6,17 @@ class Member implements Observer {
     private int memberId;
     private MembershipState memberState;
     private String username;
-    private String password;
+    private String password;    
     private List<Order> orderHistory = new ArrayList<>();
 
     public Member() {}
+
+    public Member(String username, String password) {
+        this.memberId = memberIdCounter++;
+        this.username = username;
+        this.password = password;
+        this.memberState = MembershipState.STANDARD;
+    }
 
     public Member(String username, String password, MembershipState memberState) {
         this.memberId = memberIdCounter++;
@@ -49,5 +56,13 @@ class Member implements Observer {
     @Override
     public void update(Observable observable) {
         System.out.println("Member updated");
+    }
+
+    public void setRole(String string) {
+        if (string.equals("Premium")) {
+            this.memberState = MembershipState.PREMIUM;
+        } else {
+            this.memberState = MembershipState.STANDARD;
+        }
     }
 }
