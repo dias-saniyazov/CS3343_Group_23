@@ -1,0 +1,26 @@
+[
+  {
+    "menuItemId": 1,
+    "observers": [],
+    "name": "Burger",
+    "price": 8.49,
+    "tags": [],
+    "description": "A delicious burger with lettuce, tomato, and cheese."
+  },
+  {
+    "menuItemId": 1,
+    "observers": [],
+    "name": "Pizza",
+    "price": 12.99,
+    "tags": [],
+    "description": "This is description of a menu product"
+  },
+  {
+    "menuItemId": 1,
+    "observers": [],
+    "name": "Pasta",
+    "price": 4.99,
+    "tags": [],
+    "description": "This is description of a menu product"
+  }
+]

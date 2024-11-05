@@ -12,14 +12,17 @@ class MenuItem implements Observable {
     private String name;
     @JsonProperty("price")
     private float price;
-    //private List<Tag> tags = new ArrayList<>();
-
+    private List<Tag> tags = new ArrayList<>();
+    private String description;
+    
     public MenuItem() {}
-
-    public MenuItem(String name, float price) {
+    
+    public MenuItem(String name, String description, float price, List<Tag> tags) {
         this.menuItemId = itemIdCounter++;
         this.name = name;
         this.price = price;
+        this.description = description;
+        this.tags = tags;
     }
 
     @Override
@@ -41,6 +44,10 @@ class MenuItem implements Observable {
 
     public String getMenuItemID() {
         return String.valueOf(menuItemId);
+    }
+
+    public String getName() {
+        return name;
     }
 
     public float getPrice() {

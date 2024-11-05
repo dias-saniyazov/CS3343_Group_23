@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -24,12 +25,12 @@ public class Main {
 
             Application clientApp = appFactory.createAndGetApplication("Client");
             Application admineApp   = appFactory.createAndGetApplication("Admin");
-            String loginResult = clientApp.login(username, password);
+            boolean loginResult = dbController.loginMember(username, password);
             System.out.println(loginResult);
 
-            if (loginResult.equals("Client logged in")) {
+            if (loginResult) {
 
-                ClientApplication clientApplication = (ClientApplication) clientApp;
+                //ClientApplication clientApplication = (ClientApplication) clientApp;
                 AdminApplication adminApplication = (AdminApplication) admineApp;
                 System.out.println("Do you want to add a new menu item? (yes/no)");
                 String addMenuItemChoice = scanner.nextLine();
@@ -40,9 +41,10 @@ public class Main {
                     System.out.println("Enter item price:");
                     float itemPrice = scanner.nextFloat();
                     scanner.nextLine(); // Consume newline
+                    String description = "This is description of a menu product";
+                    List<Tag> tags = new ArrayList<>();
 
-                    MenuItem newItem = new MenuItem(itemName, itemPrice);
-                    boolean isAdded = adminApplication.createMenuItem(newItem);
+                    boolean isAdded = adminApplication.createMenuItem(itemName, description, itemPrice, tags);
 
                     if (isAdded) {
                         System.out.println("Menu item added successfully.");
@@ -50,7 +52,7 @@ public class Main {
                         System.out.println("Failed to add menu item.");
                     }
                 }
-                ArrayList<MenuItem> menu = clientApplication.viewMenu();
+                List<MenuItem> menu = dbController.viewMenu();
                 System.out.println("Menu:");
                 for (MenuItem item : menu) {
                     System.out.println(item.getMenuItemID() + ": " + item.getPrice());

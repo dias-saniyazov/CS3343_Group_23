@@ -1,14 +1,14 @@
-class Premium implements MembershipState {
-    private static Premium instance = new Premium();
+// class Premium implements MembershipState {
+//     private static Premium instance = new Premium();
 
-    private Premium() {}
+//     private Premium() {}
 
-    public static Premium getInstance() {
-        return instance;
-    }
+//     public static Premium getInstance() {
+//         return instance;
+//     }
 
-    @Override
-    public int discount(int minutes) {
-        return minutes * 2; // Example discount logic
-    }
-}
+//     @Override
+//     public int discount(int minutes) {
+//         return minutes * 2; // Example discount logic
+//     }
+// }

@@ -1,0 +1,11 @@
+[
+  {
+    "orderId": 1,
+    "memberId": 1,
+    "status": "READY",
+    "orderItems": [],
+    "total": 0,
+    "date": "2021-01-01",
+    "time": "12:00"
+  }
+]

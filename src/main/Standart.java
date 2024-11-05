@@ -1,14 +1,14 @@
-class Standard implements MembershipState {
-    private static Standard instance = new Standard();
+// class Standard implements MembershipState {
+//     private static Standard instance = new Standard();
 
-    private Standard() {}
+//     private Standard() {}
 
-    public static Standard getInstance() {
-        return instance;
-    }
+//     public static Standard getInstance() {
+//         return instance;
+//     }
 
-    @Override
-    public int discount(int minutes) {
-        return 0; // No discount
-    }
-}
+//     @Override
+//     public int discount(int minutes) {
+//         return 0; // No discount
+//     }
+// }
