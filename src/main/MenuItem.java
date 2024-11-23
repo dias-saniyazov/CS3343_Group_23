@@ -1,16 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 class MenuItem implements Observable {
     private static int itemIdCounter = 1;
-    @JsonProperty("menuItemId")
     private int menuItemId;
     private List<Observer> observers = new ArrayList<>();
-    @JsonProperty("name")
     private String name;
-    @JsonProperty("price")
     private float price;
     private List<String> tags = new ArrayList<>();
     private String description;
