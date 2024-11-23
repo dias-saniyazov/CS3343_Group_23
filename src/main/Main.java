@@ -7,9 +7,15 @@ import java.util.Scanner;
 // Main class to demonstrate the application
 public class Main {
     public static void main(String[] args) {
+        DBController dbController = new DBController();
+        List<MenuItem> menuu = dbController.viewMenu();
+        System.out.println("Menu:");
+        for (MenuItem item : menuu) {
+            System.out.println(item.getMenuItemID() + ": " + item.getName() + "-" + item.getPrice());
+        }
         Scanner scanner = new Scanner(System.in);
         ApplicationFactory appFactory = new ApplicationFactory();
-        DBController dbController = new DBController();
+    
         
         System.out.println("Welcome to the Restaurant Booking System");
         System.out.println("1. Log In");
@@ -42,9 +48,9 @@ public class Main {
                     float itemPrice = scanner.nextFloat();
                     scanner.nextLine(); // Consume newline
                     String description = "This is description of a menu product";
-                    List<Tag> tags = new ArrayList<>();
+                    List<String> tags = new ArrayList<>();
 
-                    boolean isAdded = adminApplication.createMenuItem(itemName, description, itemPrice, tags);
+                    boolean isAdded = adminApplication.createMenuItem(dbController, itemName, description, itemPrice, tags);
 
                     if (isAdded) {
                         System.out.println("Menu item added successfully.");
@@ -55,7 +61,7 @@ public class Main {
                 List<MenuItem> menu = dbController.viewMenu();
                 System.out.println("Menu:");
                 for (MenuItem item : menu) {
-                    System.out.println(item.getMenuItemID() + ": " + item.getPrice());
+                    System.out.println(item.getMenuItemID() + ": " + item.getName() + "-" + item.getPrice());
                 }
             }
         } else if (choice == 2) {

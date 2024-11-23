@@ -109,7 +109,7 @@ class DBController {
         return menu;
     }
 
-    boolean addNewMenuItem(String name, String description, float price, List<Tag> tags) {
+    boolean addNewMenuItem(String name, String description, float price, List<String> tags) {
         for (MenuItem menuItem : menu) {
             if (menuItem.getName().equals(name)) {
                 return false; // Username already exists

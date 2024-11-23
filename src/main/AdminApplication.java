@@ -7,8 +7,8 @@ class AdminApplication extends Application {
         return "Admin logged in";
     }
 
-    boolean createMenuItem(String name, String description, float price, List<Tag> tags) {
-        DBController db = new DBController();
+    boolean createMenuItem(DBController db, String name, String description, float price, List<String> tags) {
+        //DBController db = new DBController();
         return db.addNewMenuItem(name, description, price, tags);
     }
 
