@@ -45,6 +45,9 @@ class Member implements Observer {
     public String getPassword() {
         return password;
     }
+    public MembershipState getMemberState() {
+        return memberState;
+    }
 
     @Override
     public void update(Observable observable) {
