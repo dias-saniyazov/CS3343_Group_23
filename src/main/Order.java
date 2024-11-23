@@ -7,6 +7,7 @@ class Order {
     private int memberId;
     private List<MenuItem> items = new ArrayList<>();
     //private DateTime orderTime;
+    
     private Payment payment;
 
     public Order(Member member, Cart cart, Payment payment) {
@@ -24,5 +25,10 @@ class Order {
 
     public Payment getPayment() {
         return payment;
+    }
+    interface Observable {
+        void addObserver(Observer observer);
+        void removeObserver(Observer observer);
+        void notifyObservers();
     }
 }

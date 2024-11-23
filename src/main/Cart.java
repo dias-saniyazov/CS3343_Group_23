@@ -3,25 +3,27 @@ import java.util.List;
 
 class Cart {
     private List<MenuItem> items = new ArrayList<>();
-    private float total;
+    private float total = 0;
 
-    float loadCost() {
-        total = 0;
-        for (MenuItem item : items) {
-            total += item.getPrice();
-        }
-        return total;
+    public Cart(List<MenuItem> items, float total) {
+        this.items = items;
     }
 
-    boolean addItem(MenuItem item) {
+    public boolean addItem(MenuItem item) {
+        total += item.getPrice();
         return items.add(item);
     }
 
-    boolean removeItem(MenuItem item) {
+    public boolean removeItem(MenuItem item) {
+        total -= item.getPrice();
         return items.remove(item);
     }
 
-    List<MenuItem> getItems() {
+    public List<MenuItem> getItems() {
         return items;
+    }
+
+    public float getTotal() {
+        return total;
     }
 }
