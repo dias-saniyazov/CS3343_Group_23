@@ -100,7 +100,7 @@ class DBController {
         return false;
     }
 
-    public boolean createTransaction(Payment payment) {
+    public boolean createTransaction(Order order) {
         // Simulate transaction creation
         return true;
     }

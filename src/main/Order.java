@@ -1,11 +1,18 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 class Order {
     private static int orderCount = 1;
     private int orderID;
     private int memberId;
-    private List<MenuItem> items = new ArrayList<>();
+    public int getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(int memberId) {
+        this.memberId = memberId;
+    }
+    private Map<MenuItem, Integer> items = new HashMap<>();
     //private DateTime orderTime;
     
     private Payment payment;
@@ -13,7 +20,7 @@ class Order {
     public Order(Member member, Cart cart, Payment payment) {
         this.orderID = orderCount++;
         this.memberId = member.getMemberId();
-        this.items.addAll(cart.getItems());
+        this.items = cart.getItems();
         // this.orderTime = orderTime;
         this.payment = payment;
         member.viewOrderHistory().add(this);

@@ -16,23 +16,26 @@ public class PaymentController {
         }
 
         // Load the cart's total cost
-        float totalCost = cart.loadCost();
+        float totalCost = cart.getTotal();
         System.out.println("Cart total cost: " + totalCost);
 
         // Create a payment instance
         Payment payment = new Payment("Credit Card"); // Assuming default payment type is Credit Card
 
         // Discount logic based on membership state
-        int discount = member.getMemberState().discount(10); // Assuming 10 minutes for discount calculation
-        float finalCost = totalCost - discount;
-        System.out.println("Discount applied: " + discount);
-        System.out.println("Final cost after discount: " + finalCost);
+        MembershipState state = member.getMemberState(); // Assuming 10 minutes for discount calculation
+        if(MembershipState.PREMIUM.equals(state)) {
+            totalCost = totalCost * 0.9f; // 10% discount for premium members
+            System.out.println("Discount applied: 10%");
+        } 
+        
+        System.out.println("Final cost after discount: " + totalCost);
 
         // Create the order
-        Order order = new Order(member, cart, new Date());
+        Order order = new Order(member, cart, payment);
 
         // Save the order to the database via DBController
-        boolean transactionStatus = dbController.createTransaction(payment);
+        boolean transactionStatus = dbController.createTransaction(order);
 
         if (transactionStatus) {
             System.out.println("Order created successfully. Payment processed.");
