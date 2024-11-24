@@ -26,7 +26,7 @@ public class Payment {
         DBController dbController = DBController.getInstance();
         if (member.getBalance() >= totalCost) {
             dbController.changeBalance(member, -totalCost);
-            System.out.println("Payment successful! Your new balance is: " + (member.getBalance() - totalCost));
+            System.out.println("Payment successful! Your new balance is: " + (member.getBalance()));
             return true;
         } else {
             System.out.println("Insufficient balance! Please top up your account.");

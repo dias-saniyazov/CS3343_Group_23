@@ -1,11 +1,1 @@
-[
-  {
-    "orderId": 1,
-    "memberId": 1,
-    "status": "READY",
-    "orderItems": [],
-    "total": 0,
-    "date": "2021-01-01",
-    "time": "12:00"
-  }
-]
+[{"orderID":0,"memberId":0,"orderTime":{"date":{"year":2024,"month":11,"day":24},"time":{"hour":23,"minute":9,"second":42,"nano":993499000}},"items":{"pizza":1},"totalCost":20.0},{"orderID":1,"memberId":1,"orderTime":{"date":{"year":2024,"month":11,"day":24},"time":{"hour":23,"minute":36,"second":28,"nano":609427000}},"items":{"Burger":12,"pizza":2},"totalCost":341.88},{"orderID":2,"memberId":1,"orderTime":{"date":{"year":2024,"month":11,"day":24},"time":{"hour":23,"minute":37,"second":29,"nano":830831000}},"items":{"Burger":12,"pizza":2},"totalCost":381.88},{"orderID":3,"memberId":2,"orderTime":{"date":{"year":2024,"month":11,"day":24},"time":{"hour":23,"minute":41,"second":42,"nano":537678000}},"items":{"Burger":5},"totalCost":42.449997}]

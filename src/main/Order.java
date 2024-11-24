@@ -8,36 +8,41 @@ class Order {
     private int orderID;
     private int memberId;
     private LocalDateTime orderTime;
-    private Map<MenuItem, Integer> items = new HashMap<>();
+    private Map<String, Integer> items = new HashMap<>();
+    private float totalCost;
     public int getMemberId() {
         return memberId;
+    }
+
+    public static void setCounter(int num) {
+        Order.orderCount = num;
     }
 
     public void setMemberId(int memberId) {
         this.memberId = memberId;
     }
-    
-    private Payment payment;
 
-    public Order(Member member, Cart cart, Payment payment) {
-        this.orderID = orderCount++;
+
+    public Order(Member member, Cart cart) {
+        this.orderID = Order.orderCount;
+        Order.orderCount += 1;
         this.memberId = member.getMemberId();
         this.items = cart.getItems();
         this.orderTime = LocalDateTime.now();
-        this.payment = payment;
-        member.viewOrderHistory().add(this);
+        this.totalCost = cart.getTotal();
+        member.addOrder(this);
     }
 
     public int getOrderID() {
         return orderID;
     }
 
-    public Map<MenuItem, Integer> getItems() {
-        return items;
+    public float getTotalCost() {
+        return totalCost;
     }
 
-    public Payment getPayment() {
-        return payment;
+    public Map<String, Integer> getItems() {
+        return items;
     }
 
     public LocalDateTime getOrderTime() {

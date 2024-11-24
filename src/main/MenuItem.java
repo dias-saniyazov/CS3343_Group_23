@@ -19,6 +19,10 @@ class MenuItem implements Observable {
         MenuItem.itemIdCounter++;
     }
 
+    public static void setCounter(int num) {
+        MenuItem.itemIdCounter = num;
+    }
+
     @Override
     public void addObserver(Observer observer) {
         observers.add(observer);

@@ -45,9 +45,16 @@ class ClientApplication extends Application {
                     String password = scanner.nextLine();
                     Member member = dbController.validateMemberCredentials(username, password);
                     if(member != null){
-                        MemberApplication memberApplication = new MemberApplication(member);
-                        memberApplication.start();
-                        break;
+                        if (member.getMemberState() == MembershipState.ADMIN) {
+                            Application adminApplication = ApplicationFactory.createAndGetApplication("Admin");
+                            adminApplication.start();
+                            break;
+                        }
+                        else {
+                            MemberApplication memberApplication = new MemberApplication(member);
+                            memberApplication.start();
+                            break;
+                        }
                     } else {
                         System.out.println("Invalid login credentials.");
                         System.out.println("1. Try again");
@@ -93,5 +100,6 @@ class ClientApplication extends Application {
         }
         scanner.close();
     }
+    
     
 }

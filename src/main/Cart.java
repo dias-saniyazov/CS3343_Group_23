@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Cart {
-    private Map<MenuItem, Integer> items = new HashMap<>(); // Key: MenuItem, Value: Quantity
+    private Map<String, Integer> items = new HashMap<>(); // Key: MenuItem, Value: Quantity
     private float total = 0;
 
     // Default constructor for an empty cart
@@ -24,11 +24,11 @@ public class Cart {
 
     public void addItem(MenuItem item, int quantity) {
         if (items.containsKey(item)) {
-            items.put(item, items.get(item) + quantity);
+            items.put(item.getName(), items.get(item) + quantity);
         } else {
-            items.put(item, quantity);
+            items.put(item.getName(), quantity);
         }
-        total += item.getPrice();
+        total += item.getPrice() * quantity;
     }
 
     public void emptyCart() {
@@ -36,8 +36,8 @@ public class Cart {
         total = 0;
     }
 
-    public Map<MenuItem, Integer> getItems() {
-        return new HashMap<>(items); // Return a copy of the internal map
+    public Map<String, Integer> getItems() {
+        return items; // Return a copy of the internal map
     }
 
     public float getTotal() {

@@ -5,10 +5,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ApplicationFactory appFactory = new ApplicationFactory();
-        Application app = appFactory.createAndGetApplication("Client");
+       
+        Application app = ApplicationFactory.createAndGetApplication("Client");
 
-        
         app.start();
         
         scanner.close();

@@ -31,11 +31,12 @@ public class PaymentController {
         if(MembershipState.PREMIUM.equals(state)) {
             totalCost = totalCost * 0.9f; // 10% discount for premium members
         } 
+        System.out.println(member.getBalance());
         if(payment.makePaymentWithBalance(member, totalCost) == false) {
             return false;
         }
         // Create the order
-        Order order = new Order(member, cart, payment);
+        Order order = new Order(member, cart);
 
         // Save the order to the database via DBController
         boolean transactionStatus = dbController.createTransaction(order);
@@ -53,8 +54,7 @@ public class PaymentController {
         System.out.println("2. Apple Pay");
         System.out.println("3. Google Pay");
         int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        scanner.close();
+        //scanner.close();
         String paymentType = "";
         switch (choice) {
             case 1:
@@ -73,7 +73,7 @@ public class PaymentController {
         Payment payment = new Payment(paymentType);
         payment.makePaymentwithPaymentType(member, amount);
 
-        System.out.println("Balance topped up successfully! Your new balance is: " + (member.getBalance() + amount));
+        System.out.println("Balance topped up successfully! Your new balance is: " + (member.getBalance()));
         return true;
     }
 }

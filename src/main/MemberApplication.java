@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -20,6 +21,7 @@ class MemberApplication extends ClientApplication{
         Cart cart = new Cart();
         System.out.println("Welcome " + member.getUsername());
         while (true) {
+            System.out.println("****************************");
             System.out.println("1. View Menu");
             System.out.println("2. Add Item to Cart");
             System.out.println("3. View Cart");
@@ -29,17 +31,18 @@ class MemberApplication extends ClientApplication{
             System.out.println("7. View order history");
             System.out.println("8. Top up Balance");
             System.out.println("9. Logout");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            System.out.println("****************************");
+            int choice = getIntInput(scanner);
 
             if (choice == 1) {
                 super.viewMenu();
             } else if (choice == 2) {
                 while(true){
                     System.out.println("Enter item name:");
+                    scanner.nextLine(); // Consume newline
                     String itemName = scanner.nextLine();
                     System.out.println("Enter quantity:");
-                    int quantity = scanner.nextInt();
+                    int quantity = getIntInput(scanner);
                     scanner.nextLine(); // Consume newline
                     List<MenuItem> menu = dbController.viewMenu();
                     MenuItem selectedItem = null;
@@ -58,24 +61,26 @@ class MemberApplication extends ClientApplication{
                         System.out.println("Item not found.");
                         System.out.println("1. Try again");
                         System.out.println("2. Go back");
-                        int option = scanner.nextInt();
-                        scanner.nextLine();
+                        int option = getIntInput(scanner);
                         if(option == 2){
                             break;
                         }
                     }
                 }
             } else if (choice == 3) {
-                System.out.println("Cart:");
+                System.out.println("********** CART ************");
                 if (cart.getItems().isEmpty()) {
                     System.out.println("Cart is empty.");
                 }
                 else {
-                    for (Map.Entry<MenuItem, Integer> entry : cart.getItems().entrySet()) {
-                        MenuItem item = entry.getKey();
+                    for (Map.Entry<String, Integer> entry : cart.getItems().entrySet()) {
+                        String item = entry.getKey();
                         int quantity = entry.getValue();
-                        System.out.println(item.getName() + " - Quantity: " + quantity + ", Price: " + item.getPrice() * quantity);
+                        System.out.println(item + " - Quantity: " + quantity + ", Price: " + dbController.findPrice(item) * quantity);
                     }
+                    System.out.println("____________________________");
+                    System.out.println("Total: " + cart.getTotal());
+                    System.out.println("****************************");
                 }
             } else if (choice == 4) {
                 cart.emptyCart();
@@ -104,12 +109,15 @@ class MemberApplication extends ClientApplication{
             }
             else if(choice == 8){
                 System.out.println("Enter amount to top up:");
-                float amount = scanner.nextFloat();
-                scanner.nextLine();
-                PaymentController paymentController = new PaymentController(dbController);
-                boolean isOrderCompleted = paymentController.topUpBalance(member, amount);
-                if(!isOrderCompleted){
-                    System.out.println("Failed to top up balance.");
+                try {
+                    float amount = getFloatInput(scanner);
+                    PaymentController paymentController = new PaymentController(dbController);
+                    boolean isOrderCompleted = paymentController.topUpBalance(member, amount);
+                    if(!isOrderCompleted){
+                        System.out.println("Failed to top up balance.");
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid floating-point number.");
                 }
             }
             else if (choice == 9) {
@@ -123,7 +131,7 @@ class MemberApplication extends ClientApplication{
             System.out.println("Cart is empty. Cannot create order.");
             return false;
         }
-        Order order = new Order(member, cart, new Payment("Credit Card"));
+        Order order = new Order(member, cart);
         DBController db = DBController.getInstance();
         boolean success = db.createTransaction(order);
         if (success) {
@@ -133,13 +141,32 @@ class MemberApplication extends ClientApplication{
     }
 
     void viewOrders(Member member) {
-        List<Order> orders = member.viewOrderHistory();
+        List<Integer> orders = member.viewOrderHistory();
         if (orders.isEmpty()) {
             System.out.println("No orders found.");
         } else {
-            for (Order order : orders) {
-                System.out.println("Order ID: " + order.getOrderID());
+            for (Integer order : orders) {
+                System.out.println("Order ID: " + order);
             }
+        }
+    }
+    private int getIntInput(Scanner scanner) {
+        try {
+            return scanner.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a number.");
+            //scanner.nextLine(); // Consume the invalid input
+            return -1;
+        }
+    }
+
+    private float getFloatInput(Scanner scanner) {
+        try {
+            return scanner.nextFloat();
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid amount.");
+            //scanner.nextLine(); // Consume the invalid input
+            return -1;
         }
     }
 }

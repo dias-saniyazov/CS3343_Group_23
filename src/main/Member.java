@@ -8,11 +8,16 @@ class Member implements Observer {
     private String username;
     private String password;    
     private float balance;
-    private List<Order> orderHistory = new ArrayList<>();
+    private List<Integer> orderHistory = new ArrayList<>();
     private List<String> notifications = new ArrayList<>();
 
+    public static void setCounter(int num) {
+        Member.memberIdCounter = num;
+    }
+
     public Member(String username, String password) {
-        this.memberId = memberIdCounter++;
+        this.memberId = Member.memberIdCounter;
+        Member.memberIdCounter += 1;
         this.username = username;
         this.password = password;
         this.memberState = MembershipState.STANDARD;
@@ -26,8 +31,12 @@ class Member implements Observer {
         this.memberState = memberState;
     }
 
-    List<Order> viewOrderHistory() {
+    List<Integer> viewOrderHistory() {
         return orderHistory;
+    }
+
+    public void addOrder(Order order) {
+        orderHistory.add(order.getOrderID());
     }
 
     public void setUsername(String username) {
@@ -83,5 +92,12 @@ class Member implements Observer {
 
     public void topUpBalance(float amount) {
         this.balance = this.balance + amount;
+        if(amount >= 0){
+            System.out.println("Balance topped up successfully!");
+        }
+        else{
+            System.out.println("Balance deducted successfully!");
+        }
+        
     }
 }

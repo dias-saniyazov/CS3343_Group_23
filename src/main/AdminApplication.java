@@ -15,12 +15,14 @@ public class AdminApplication extends Application {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Admin panel");
         while(true) {
+            System.out.println("****************************");
             System.out.println("1. Create menu item");
             System.out.println("2. View menu");
             System.out.println("3. View orders");
             System.out.println("4. View members");
             System.out.println("5. View analytics");
             System.out.println("6. Log out");
+            System.out.println("****************************");
             int choice = scanner.nextInt();
             scanner.nextLine();
 
@@ -77,12 +79,12 @@ public class AdminApplication extends Application {
         List<Order> orders = db.viewOrders();
         System.out.println("Orders:");
         for (Order order : orders) {
-            Map<MenuItem, Integer> items = order.getItems();
-            for (Map.Entry<MenuItem, Integer> entry : items.entrySet()) {
-                MenuItem item = entry.getKey();
+            Map<String, Integer> items = order.getItems();
+            for (Map.Entry<String, Integer> entry : items.entrySet()) {
+                String item = entry.getKey();
                 int quantity = entry.getValue();
-                float cost = item.getPrice() * quantity;
-                sb.append(String.format("%-10d %-10d %-20s %-10d %-10.2f %-20s\n", order.getOrderID(), order.getMemberId(), item.getName(), quantity, cost, order.getOrderTime().toString()));
+                float cost = db.findPrice(item) * quantity;
+                sb.append(String.format("%-10d %-10d %-20s %-10d %-10.2f %-20s\n", order.getOrderID(), order.getMemberId(), item, quantity, cost, order.getOrderTime().toString()));
             }
         }
     }
@@ -133,30 +135,30 @@ public class AdminApplication extends Application {
             return;
         }
 
-        Map<MenuItem, Integer> itemSales = new HashMap<>();
+        Map<String, Integer> itemSales = new HashMap<>();
         double totalRevenue = 0;
         int totalOrders = orders.size();
 
         for (Order order : orders) {
-            for (Map.Entry<MenuItem, Integer> entry : order.getItems().entrySet()) {
-                MenuItem item = entry.getKey();
+            for (Map.Entry<String, Integer> entry : order.getItems().entrySet()) {
+                String item = entry.getKey();
                 int quantity = entry.getValue();
                 itemSales.put(item, itemSales.getOrDefault(item, 0) + quantity);
-                totalRevenue += item.getPrice() * quantity;
+                totalRevenue += db.findPrice(item) * quantity;
             }
         }
 
-        List<Map.Entry<MenuItem, Integer>> topItems = itemSales.entrySet().stream()
-                .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
-                .limit(5)
-                .collect(Collectors.toList());
+        List<Map.Entry<String, Integer>> topItems = itemSales.entrySet().stream()
+            .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+            .limit(5)
+            .collect(Collectors.toList());
 
         double averageSpending = totalRevenue / totalOrders;
 
         System.out.println("Analytics for the selected period:");
         System.out.println(String.format("%-20s %-10s", "ItemName", "Quantity"));
-        for (Map.Entry<MenuItem, Integer> entry : topItems) {
-            System.out.println(String.format("%-20s %-10d", entry.getKey().getName(), entry.getValue()));
+        for (Map.Entry<String, Integer> entry : topItems) {
+            System.out.println(String.format("%-20s %-10d", entry.getKey(), entry.getValue()));
         }
         System.out.println(String.format("Average amount of money spent by a customer: %.2f", averageSpending));
         System.out.println(String.format("Total revenue: %.2f", totalRevenue));

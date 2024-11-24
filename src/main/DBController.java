@@ -29,6 +29,18 @@ public class DBController {
         members = loadMembers();
         orders = loadOrders();
         menu = loadMenu();
+        if (members == null) {
+            members = new ArrayList<>();
+        }
+        if (orders == null) {
+            orders = new ArrayList<>();
+        }   
+        if (menu == null) {
+            menu = new ArrayList<>();
+        }   
+        Member.setCounter(members.size());
+        Order.setCounter(orders.size());
+        MenuItem.setCounter(menu.size());
     }
 
     private List<Member> loadMembers() {
@@ -109,6 +121,9 @@ public class DBController {
     }
 
     public boolean createTransaction(Order order) {
+        if(orders == null) {
+            orders = new ArrayList<>();
+        }
         orders.add(order);
         saveOrders();
         return true;
@@ -125,6 +140,7 @@ public class DBController {
     List<Member> viewMembers(){
         return members;
     }
+
     boolean addNewMenuItem(String name, String description, float price, List<String> tags) {
         for (MenuItem menuItem : menu) {
             if (menuItem.getName().equals(name)) {
@@ -180,13 +196,22 @@ public class DBController {
 
     public boolean changeBalance(Member member, float amount) {
         for (Member m : members) {
-            if (m.getMemberId() == member.getMemberId()) {
+            if (m.getUsername() == member.getUsername()) {
                 m.topUpBalance(amount);
                 saveMembers();
                 return true;
             }
         }
         return false; // User not found
+    }
+
+    public float findPrice(String itemName) {
+        for (MenuItem item : menu) {
+            if (item.getName().equals(itemName)) {
+                return item.getPrice();
+            }
+        }
+        return 0;
     }
     
 }
