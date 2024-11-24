@@ -9,15 +9,23 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 
 
-class DBController {
+public class DBController {
     private final String MEMBERS = "data/members.json";
     private final String MENU = "data/menu.json";
     private final String ORDERS = "data/orders.json";
     private List<Member> members;
-    private List<MenuItem> orders;
+    private List<Order> orders;
     private List<MenuItem> menu;
 
-    public DBController() {
+    private static DBController instance = null;
+
+    public static DBController getInstance() {
+        if (instance == null) {
+            instance = new DBController();
+        }
+        return instance;
+    }
+    private DBController() {
         members = loadMembers();
         orders = loadOrders();
         menu = loadMenu();
@@ -32,9 +40,9 @@ class DBController {
         }
     }
     
-    private List<MenuItem> loadOrders() {
+    private List<Order> loadOrders() {
         try (FileReader reader = new FileReader(ORDERS)) {
-            Type type = new TypeToken<ArrayList<MenuItem>>() {}.getType();
+            Type type = new TypeToken<ArrayList<Order>>() {}.getType();
             return new Gson().fromJson(reader, type);
         } catch (IOException e) {
             return new ArrayList<>();
@@ -101,7 +109,8 @@ class DBController {
     }
 
     public boolean createTransaction(Order order) {
-        // Simulate transaction creation
+        orders.add(order);
+        saveOrders();
         return true;
     }
 
@@ -109,10 +118,17 @@ class DBController {
         return menu;
     }
 
+    List<Order> viewOrders() {
+        return orders;
+    }
+
+    List<Member> viewMembers(){
+        return members;
+    }
     boolean addNewMenuItem(String name, String description, float price, List<String> tags) {
         for (MenuItem menuItem : menu) {
             if (menuItem.getName().equals(name)) {
-                return false; // Username already exists
+                return false; // name already exists
             }
         }
         menu.add(new MenuItem(name, description, price, tags));
@@ -123,7 +139,7 @@ class DBController {
     boolean addNewMenuItem(MenuItem item) {
         for (MenuItem menuItem : menu) {
             if (menuItem.getName().equals(item.getName())) {
-                return false; // Username already exists
+                return false; // name already exists
             }
         }
         menu.add(item);
@@ -131,9 +147,13 @@ class DBController {
         return true;
     }
 
-    String validateMemberCredentials(String username, String password) {
-        return members.stream().anyMatch(m -> m.getUsername().equals(username) && m.getPassword().equals(password)) 
-                ? "valid" : "invalid";
+    Member validateMemberCredentials(String username, String password) {
+        for (Member member : members) {
+            if (member.getUsername().equals(username) && member.getPassword().equals(password)) {
+                return member;
+            }
+        }
+        return null;
     }
 
     public boolean upgradeMember(Member member) {
@@ -157,4 +177,16 @@ class DBController {
         }
         return false; // User not found
     }
+
+    public boolean changeBalance(Member member, float amount) {
+        for (Member m : members) {
+            if (m.getMemberId() == member.getMemberId()) {
+                m.topUpBalance(amount);
+                saveMembers();
+                return true;
+            }
+        }
+        return false; // User not found
+    }
+    
 }

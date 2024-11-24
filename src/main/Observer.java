@@ -1,3 +1,3 @@
 interface Observer {
-    void update(Observable observable);
+    void update(Observable observable, String content);
 }

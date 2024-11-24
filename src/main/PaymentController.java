@@ -1,4 +1,5 @@
 import java.util.Date;
+import java.util.Scanner;
 
 public class PaymentController {
 
@@ -19,18 +20,20 @@ public class PaymentController {
         float totalCost = cart.getTotal();
         System.out.println("Cart total cost: " + totalCost);
 
-        // Create a payment instance
-        Payment payment = new Payment("Credit Card"); // Assuming default payment type is Credit Card
+        
+        
+        
+
+        Payment payment = new Payment("Balance"); // Assuming default payment type is Credit Card
 
         // Discount logic based on membership state
         MembershipState state = member.getMemberState(); // Assuming 10 minutes for discount calculation
         if(MembershipState.PREMIUM.equals(state)) {
             totalCost = totalCost * 0.9f; // 10% discount for premium members
-            System.out.println("Discount applied: 10%");
         } 
-        
-        System.out.println("Final cost after discount: " + totalCost);
-
+        if(payment.makePaymentWithBalance(member, totalCost) == false) {
+            return false;
+        }
         // Create the order
         Order order = new Order(member, cart, payment);
 
@@ -38,11 +41,39 @@ public class PaymentController {
         boolean transactionStatus = dbController.createTransaction(order);
 
         if (transactionStatus) {
-            System.out.println("Order created successfully. Payment processed.");
             return true;
         } else {
-            System.out.println("Transaction failed. Please try again.");
             return false;
         }
+    }
+    public boolean topUpBalance(Member member, float amount) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Select payment method:");
+        System.out.println("1. Credit Card");
+        System.out.println("2. Apple Pay");
+        System.out.println("3. Google Pay");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        scanner.close();
+        String paymentType = "";
+        switch (choice) {
+            case 1:
+                paymentType = "Credit Card";
+                break;
+            case 2:
+                paymentType = "Apple Pay";
+                break;
+            case 3:
+                paymentType = "Google Pay";
+                break;
+            default:
+                System.out.println("Invalid choice. Please try again.");
+                return false;
+        }
+        Payment payment = new Payment(paymentType);
+        payment.makePaymentwithPaymentType(member, amount);
+
+        System.out.println("Balance topped up successfully! Your new balance is: " + (member.getBalance() + amount));
+        return true;
     }
 }

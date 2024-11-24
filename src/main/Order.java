@@ -1,10 +1,14 @@
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDateTime;
 
 class Order {
     private static int orderCount = 1;
     private int orderID;
     private int memberId;
+    private LocalDateTime orderTime;
+    private Map<MenuItem, Integer> items = new HashMap<>();
     public int getMemberId() {
         return memberId;
     }
@@ -12,8 +16,6 @@ class Order {
     public void setMemberId(int memberId) {
         this.memberId = memberId;
     }
-    private Map<MenuItem, Integer> items = new HashMap<>();
-    //private DateTime orderTime;
     
     private Payment payment;
 
@@ -21,7 +23,7 @@ class Order {
         this.orderID = orderCount++;
         this.memberId = member.getMemberId();
         this.items = cart.getItems();
-        // this.orderTime = orderTime;
+        this.orderTime = LocalDateTime.now();
         this.payment = payment;
         member.viewOrderHistory().add(this);
     }
@@ -30,8 +32,16 @@ class Order {
         return orderID;
     }
 
+    public Map<MenuItem, Integer> getItems() {
+        return items;
+    }
+
     public Payment getPayment() {
         return payment;
+    }
+
+    public LocalDateTime getOrderTime() {
+        return orderTime;
     }
     interface Observable {
         void addObserver(Observer observer);

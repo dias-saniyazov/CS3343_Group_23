@@ -7,15 +7,16 @@ class Member implements Observer {
     private MembershipState memberState;
     private String username;
     private String password;    
+    private float balance;
     private List<Order> orderHistory = new ArrayList<>();
-
-    public Member() {}
+    private List<String> notifications = new ArrayList<>();
 
     public Member(String username, String password) {
         this.memberId = memberIdCounter++;
         this.username = username;
         this.password = password;
         this.memberState = MembershipState.STANDARD;
+        this.balance = 0;
     }
 
     public Member(String username, String password, MembershipState memberState) {
@@ -57,8 +58,12 @@ class Member implements Observer {
     }
 
     @Override
-    public void update(Observable observable) {
-        System.out.println("Member updated");
+    public void update(Observable observable, String content) {
+        notifications.add(content);
+    }
+
+    public List<String> getNotifications() {
+        return notifications;
     }
 
     public void setRole(String string) {
@@ -67,5 +72,16 @@ class Member implements Observer {
         } else {
             this.memberState = MembershipState.STANDARD;
         }
+    }
+    public float getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
+    public void topUpBalance(float amount) {
+        this.balance = this.balance + amount;
     }
 }

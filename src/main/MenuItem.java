@@ -8,8 +8,7 @@ class MenuItem implements Observable {
     private float price;
     private List<String> tags = new ArrayList<>();
     private String description;
-    
-    public MenuItem() {}
+  
     
     public MenuItem(String name, String description, float price, List<String> tags) {
         this.menuItemId = itemIdCounter;
@@ -33,7 +32,7 @@ class MenuItem implements Observable {
     @Override
     public void notifyObservers() {
         for (Observer observer : observers) {
-            observer.update(this);
+            observer.update(this, "Menu item updated: " + name);
         }
     }
 
