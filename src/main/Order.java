@@ -28,7 +28,7 @@ class Order {
         Order.orderCount += 1;
         this.memberId = member.getMemberId();
         this.items = cart.getItems();
-        this.orderTime = LocalDateTime.now();
+        this.orderTime = LocalDateTime.now().withNano(0);
         this.totalCost = cart.getTotal();
         member.addOrder(this);
     }

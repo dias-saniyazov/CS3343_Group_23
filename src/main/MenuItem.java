@@ -3,11 +3,11 @@ import java.util.List;
 class MenuItem implements Observable {
     private static int itemIdCounter = 1;
     private int menuItemId;
-    private List<Observer> observers = new ArrayList<>();
     private String name;
     private float price;
     private List<String> tags = new ArrayList<>();
     private String description;
+    private List<Observer> observers = new ArrayList<>();
   
     
     public MenuItem(String name, String description, float price, List<String> tags) {
@@ -36,7 +36,7 @@ class MenuItem implements Observable {
     @Override
     public void notifyObservers() {
         for (Observer observer : observers) {
-            observer.update(this, "Menu item updated: " + name);
+            observer.update(this, "Menu item was added: " + name);
         }
     }
 

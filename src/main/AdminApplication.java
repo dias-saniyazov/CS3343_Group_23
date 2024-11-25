@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 import java.util.HashMap;
+import exception.InvalidInputException;
+import java.util.InputMismatchException;
 
 public class AdminApplication extends Application {
 
@@ -23,16 +25,26 @@ public class AdminApplication extends Application {
             System.out.println("5. View analytics");
             System.out.println("6. Log out");
             System.out.println("****************************");
-            int choice = scanner.nextInt();
+            int choice;
+            try{
+                choice = getIntInput(scanner);
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
             scanner.nextLine();
-
             if (choice == 1) {
                 System.out.println("Enter name of the item:");
                 String name = scanner.nextLine();
                 System.out.println("Enter description of the item:");
                 String description = scanner.nextLine();
                 System.out.println("Enter price of the item:");
-                float price = scanner.nextFloat();
+                
+                String priceInput = scanner.nextLine(); // Read price as a string to handle both "./," formats
+                float price = 0;
+                priceInput = priceInput.replace(",", ".");
+                price = Float.parseFloat(priceInput);
+
                 System.out.println("Enter tags of the item (comma separated):");
                 String tagsStr = scanner.nextLine();
                 String[] tagsArr = tagsStr.split(",");
@@ -63,6 +75,20 @@ public class AdminApplication extends Application {
 
     }
 
+    private static int getIntInput(Scanner scanner) throws InvalidInputException {
+        try {
+            int n = scanner.nextInt();
+            if(n < 0 || n > 6){
+                throw new InvalidInputException(6);
+            }
+            return n;
+        } catch (InputMismatchException e) {
+            scanner.nextLine(); // Consume the invalid input
+            throw new InputMismatchException("Input valid command number!");
+        } 
+
+    }
+
     void viewMenu() {
         DBController db = DBController.getInstance();
         List<MenuItem> menu = db.viewMenu();
@@ -74,19 +100,27 @@ public class AdminApplication extends Application {
 
     void viewOrders() {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%-10s %-10s %-20s %-10s %-10s %-20s\n", "orderID", "memberID", "ItemName", "quantity", "cost", "orderTime"));
+        sb.append(String.format("%-10s %-10s %-20s %-50s %-10s\n", "orderID", "memberID", "orderTime", "items", "Total"));
         DBController db = DBController.getInstance();
         List<Order> orders = db.viewOrders();
         System.out.println("Orders:");
         for (Order order : orders) {
             Map<String, Integer> items = order.getItems();
+            float totalCost = 0;
+            StringBuilder itemsList = new StringBuilder();
             for (Map.Entry<String, Integer> entry : items.entrySet()) {
                 String item = entry.getKey();
                 int quantity = entry.getValue();
                 float cost = db.findPrice(item) * quantity;
-                sb.append(String.format("%-10d %-10d %-20s %-10d %-10.2f %-20s\n", order.getOrderID(), order.getMemberId(), item, quantity, cost, order.getOrderTime().toString()));
+                totalCost += cost;
+                itemsList.append(item).append(" (").append(quantity).append("), ");
             }
+            if (itemsList.length() > 0) {
+                itemsList.setLength(itemsList.length() - 2); // Remove the trailing comma and space
+            }
+            sb.append(String.format("%-10d %-10d %-20s %-50s %-10.2f\n", order.getOrderID(), order.getMemberId(), order.getOrderTime().toString().replace("T", " "), itemsList.toString(), totalCost));
         }
+        System.out.println(sb.toString());
     }
 
     void viewMembers() {

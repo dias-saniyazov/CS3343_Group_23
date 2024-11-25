@@ -3,7 +3,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-
+import exception.InvalidInputException;
 class MemberApplication extends ClientApplication{
     private Member member;
 
@@ -30,9 +30,19 @@ class MemberApplication extends ClientApplication{
             System.out.println("6. View Notifications");
             System.out.println("7. View order history");
             System.out.println("8. Top up Balance");
-            System.out.println("9. Logout");
+            System.out.println("9. Upgrade Account to Premium");
+            System.out.println("10. Dowgrade Account to Standard Membership");
+            System.out.println("11. View Premium Membership Information");
+            System.out.println("12. Your Profile");
+            System.out.println("13. Logout");
             System.out.println("****************************");
-            int choice = getIntInput(scanner);
+            int choice;
+            try{
+                choice = getIntInput(scanner);
+            } catch(InvalidInputException e){
+                System.out.println(e.getMessage());
+                continue;
+            }
 
             if (choice == 1) {
                 super.viewMenu();
@@ -42,7 +52,7 @@ class MemberApplication extends ClientApplication{
                     scanner.nextLine(); // Consume newline
                     String itemName = scanner.nextLine();
                     System.out.println("Enter quantity:");
-                    int quantity = getIntInput(scanner);
+                    int quantity = scanner.nextInt();
                     scanner.nextLine(); // Consume newline
                     List<MenuItem> menu = dbController.viewMenu();
                     MenuItem selectedItem = null;
@@ -61,7 +71,13 @@ class MemberApplication extends ClientApplication{
                         System.out.println("Item not found.");
                         System.out.println("1. Try again");
                         System.out.println("2. Go back");
-                        int option = getIntInput(scanner);
+                        int option;
+                        try{
+                            option = getIntInput(scanner);
+                        } catch(InvalidInputException e){
+                            System.out.println(e.getMessage());
+                            continue;
+                        }                        
                         if(option == 2){
                             break;
                         }
@@ -94,7 +110,6 @@ class MemberApplication extends ClientApplication{
                     System.out.println("Failed to complete order.");
                 }
             } else if (choice == 6) {
-                
                 List<String> notifications = member.getNotifications();
                 if (notifications == null || notifications.isEmpty()) {
                     System.out.println("No new notifications.");
@@ -116,11 +131,52 @@ class MemberApplication extends ClientApplication{
                     if(!isOrderCompleted){
                         System.out.println("Failed to top up balance.");
                     }
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid input. Please enter a valid floating-point number.");
+                } catch (Exception e){
+                    System.out.println(e.getMessage());
                 }
             }
             else if (choice == 9) {
+                if (member.getMemberState() == MembershipState.PREMIUM) {
+                    System.out.println("You are already a premium member.");
+                } else {
+                    try {
+                        PaymentController paymentController = new PaymentController(dbController);
+                        boolean isOrderCompleted = paymentController.topUpToPremium(member, 100);
+                        if(!isOrderCompleted){
+                            System.out.println("Failed to process payment.");
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+            }
+            else if (choice == 10){
+                if (member.getMemberState() == MembershipState.STANDARD) {
+                    System.out.println("You are already a standard member.");
+                } else {
+                    PaymentController paymentController = new PaymentController(dbController);
+                    boolean isOrderCompleted = paymentController.toDowngradeToStandard(member);
+                    if(!isOrderCompleted){
+                        System.out.println("Failed to downgrade account.");
+                    }
+                }
+            }
+            else if(choice == 11){
+                System.out.println("****************************");
+                System.out.println("Premium Membership Information:");
+                System.out.println("1. Premium members get 10% off on all orders.");
+                System.out.println("2. Premium membership costs $100.");
+                System.out.println("****************************");
+            }
+            else if(choice == 12){
+                System.out.println("****************************");
+                System.out.println("Your Profile:");
+                System.out.println("Username: " + member.getUsername());
+                System.out.println("Balance: " + member.getBalance());
+                System.out.println("Membership: " + member.getMemberState());
+                System.out.println("****************************");
+            }
+            else if (choice == 13) {
                 break;
             }
         }
@@ -141,21 +197,41 @@ class MemberApplication extends ClientApplication{
     }
 
     void viewOrders(Member member) {
-        List<Integer> orders = member.viewOrderHistory();
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%-10s %-10s %-20s %-50s %-10s\n", "orderID", "memberID", "orderTime", "items", "Total"));
+        DBController db = DBController.getInstance();
+        List<Order> orders = member.viewOrderHistory();
         if (orders.isEmpty()) {
             System.out.println("No orders found.");
         } else {
-            for (Integer order : orders) {
-                System.out.println("Order ID: " + order);
+            System.out.println("Orders:");
+            for (Order order : orders) {
+                Map<String, Integer> items = order.getItems();
+                float totalCost = 0;
+                StringBuilder itemsList = new StringBuilder();
+                for (Map.Entry<String, Integer> entry : items.entrySet()) {
+                    String item = entry.getKey();
+                    int quantity = entry.getValue();
+                    float cost = db.findPrice(item) * quantity;
+                    totalCost += cost;
+                    itemsList.append(item).append(" (").append(quantity).append("), ");
+                }
+                if (itemsList.length() > 0) {
+                    itemsList.setLength(itemsList.length() - 2); // Remove the trailing comma and space
+                }
+                sb.append(String.format("%-10d %-10d %-20s %-50s %-10.2f\n", order.getOrderID(), order.getMemberId(), order.getOrderTime().toString().replace("T", " "), itemsList.toString(), totalCost));
             }
+            System.out.println(sb.toString());
         }
     }
-    private int getIntInput(Scanner scanner) {
+    private int getIntInput(Scanner scanner) throws InvalidInputException{
         try {
-            return scanner.nextInt();
+            int next = scanner.nextInt();
+            if(next > 13 || next < 0) throw new InvalidInputException(13);
+            return next;
         } catch (InputMismatchException e) {
             System.out.println("Invalid input. Please enter a number.");
-            //scanner.nextLine(); // Consume the invalid input
+            scanner.nextLine(); // Consume the invalid input
             return -1;
         }
     }

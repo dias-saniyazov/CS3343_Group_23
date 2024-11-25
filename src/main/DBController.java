@@ -5,6 +5,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 
@@ -83,8 +86,21 @@ public class DBController {
     }
 
     private void saveMenu() {
+        Gson gson = new GsonBuilder()
+            .addSerializationExclusionStrategy(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+                return "observers".equals(f.getName());
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        })
+        .create();
         try (FileWriter writer = new FileWriter(MENU)) {
-            new Gson().toJson(menu, writer);
+            gson.toJson(menu, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -109,16 +125,16 @@ public class DBController {
         return true;
     }
 
-    public boolean loginMember(String username, String password) {
-        for (Member member : members) {
-            System.out.println(member.getUsername());
-            System.out.println(member.getPassword());
-            if (member.getUsername().equals(username) && member.getPassword().equals(password)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // public boolean loginMember(String username, String password) {
+    //     for (Member member : members) {
+    //         System.out.println(member.getUsername());
+    //         System.out.println(member.getPassword());
+    //         if (member.getUsername().equals(username) && member.getPassword().equals(password)) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 
     public boolean createTransaction(Order order) {
         if(orders == null) {
@@ -147,7 +163,15 @@ public class DBController {
                 return false; // name already exists
             }
         }
-        menu.add(new MenuItem(name, description, price, tags));
+        MenuItem newItem = new MenuItem(name, description, price, tags);
+        menu.add(newItem);
+        for (Member member : members) {
+            if (!member.getMemberState().equals(MembershipState.ADMIN)) {
+                newItem.addObserver(member);
+            }
+        }
+        newItem.notifyObservers();
+        saveMembers();
         saveMenu();
         return true;
     }

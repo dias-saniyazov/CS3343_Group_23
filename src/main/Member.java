@@ -8,7 +8,7 @@ class Member implements Observer {
     private String username;
     private String password;    
     private float balance;
-    private List<Integer> orderHistory = new ArrayList<>();
+    private List<Order> orderHistory = new ArrayList<>();
     private List<String> notifications = new ArrayList<>();
 
     public static void setCounter(int num) {
@@ -31,12 +31,12 @@ class Member implements Observer {
         this.memberState = memberState;
     }
 
-    List<Integer> viewOrderHistory() {
+    List<Order> viewOrderHistory() {
         return orderHistory;
     }
 
     public void addOrder(Order order) {
-        orderHistory.add(order.getOrderID());
+        orderHistory.add(order);
     }
 
     public void setUsername(String username) {
@@ -68,6 +68,7 @@ class Member implements Observer {
 
     @Override
     public void update(Observable observable, String content) {
+        System.out.println("TESTING NOTIFICATION: " + content);
         notifications.add(content);
     }
 

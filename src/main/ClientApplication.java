@@ -1,5 +1,7 @@
 import java.util.List;
 import java.util.Scanner;
+import exception.InvalidInputException;
+import java.util.InputMismatchException;
 
 class ClientApplication extends Application {
 
@@ -33,10 +35,16 @@ class ClientApplication extends Application {
             System.out.println("2. Register");
             System.out.println("3. View Menu");
             System.out.println("4. Exit");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            int choice;
+            try{
+                choice = getIntInput(scanner);
+                scanner.nextLine();  // Consume newline
+            } catch(Exception e){
+                scanner.nextLine();  // Consume newline
+                System.out.println(e.getMessage());
+                continue;
+            }
             
-        
             if (choice == 1) {
                 while(true){
                     System.out.println("Enter username:");
@@ -101,5 +109,14 @@ class ClientApplication extends Application {
         scanner.close();
     }
     
+    private int getIntInput(Scanner scanner) throws InvalidInputException{
+        try {
+            int next = scanner.nextInt();
+            if(next > 4 || next < 0) throw new InvalidInputException(4);
+            return next;
+        } catch (InputMismatchException e) {
+            throw new InputMismatchException("Input valid command number!");
+        }
+    }
     
 }
