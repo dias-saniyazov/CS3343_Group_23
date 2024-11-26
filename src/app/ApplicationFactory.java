@@ -1,3 +1,5 @@
+package app;
+
 public class ApplicationFactory {
     public static Application createAndGetApplication(String applicationType) {
         switch (applicationType) {

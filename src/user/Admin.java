@@ -1,4 +1,6 @@
-class Admin {
+package user;
+
+public class Admin {
     private String username;
     private String password;
 

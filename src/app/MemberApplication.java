@@ -1,17 +1,22 @@
-import java.util.ArrayList;
+package app;
+import exception.InvalidInputException;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import exception.InvalidInputException;
-class MemberApplication extends ClientApplication{
+import main.DBController;
+import object.*;
+import payment.PaymentController;
+import user.*;
+
+public class MemberApplication extends ClientApplication{
     private Member member;
 
     MemberApplication() {
     
     }
 
-    MemberApplication(Member member) {
+    public MemberApplication(Member member) {
         this.member = member;
     }
     @Override
@@ -201,11 +206,13 @@ class MemberApplication extends ClientApplication{
         sb.append(String.format("%-10s %-10s %-20s %-50s %-10s\n", "orderID", "memberID", "orderTime", "items", "Total"));
         DBController db = DBController.getInstance();
         List<Order> orders = member.viewOrderHistory();
+        System.out.println("Number of orders: " + orders.size()); // Debug statement
         if (orders.isEmpty()) {
             System.out.println("No orders found.");
         } else {
             System.out.println("Orders:");
             for (Order order : orders) {
+                System.out.println("Processing order ID: " + order.getOrderID()); // Debug statement
                 Map<String, Integer> items = order.getItems();
                 float totalCost = 0;
                 StringBuilder itemsList = new StringBuilder();
@@ -219,7 +226,10 @@ class MemberApplication extends ClientApplication{
                 if (itemsList.length() > 0) {
                     itemsList.setLength(itemsList.length() - 2); // Remove the trailing comma and space
                 }
-                sb.append(String.format("%-10d %-10d %-20s %-50s %-10.2f\n", order.getOrderID(), order.getMemberId(), order.getOrderTime().toString().replace("T", " "), itemsList.toString(), totalCost));
+                sb.append(String.format("%-10d %-10d %-20s %-50s %-10.2f\n", 
+                    order.getOrderID(), order.getMemberId(), 
+                    order.getOrderTime().toString().replace("T", " "), 
+                    itemsList.toString(), totalCost));
             }
             System.out.println(sb.toString());
         }

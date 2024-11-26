@@ -1,9 +1,13 @@
-import java.util.List;
-import java.util.Scanner;
+package app;
 import exception.InvalidInputException;
 import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
+import main.DBController;
+import object.*;
+import user.*;
 
-class ClientApplication extends Application {
+public class ClientApplication extends Application {
 
     void register(String username, String password) {
         DBController db = DBController.getInstance();
@@ -46,6 +50,7 @@ class ClientApplication extends Application {
             }
             
             if (choice == 1) {
+                //login();
                 while(true){
                     System.out.println("Enter username:");
                     String username = scanner.nextLine();
@@ -74,7 +79,6 @@ class ClientApplication extends Application {
                         }
                     }
                 }
-                
             } else if (choice == 2) {
                 while (true) {
                     System.out.println("Registration");

@@ -1,18 +1,24 @@
-import java.util.Scanner;
-import java.util.List;
-import java.util.Map;
+package app;
+import exception.InvalidInputException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.stream.Collectors;
+import java.util.Arrays;
 import java.util.HashMap;
-import exception.InvalidInputException;
 import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.stream.Collectors;    
+import main.DBController;
+import object.MenuItem;
+import object.Order;
+import user.Member;
 
 public class AdminApplication extends Application {
 
 
     @Override
-    void start() {
+    public void start() {
         DBController db = DBController.getInstance();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Admin panel");
@@ -48,7 +54,7 @@ public class AdminApplication extends Application {
                 System.out.println("Enter tags of the item (comma separated):");
                 String tagsStr = scanner.nextLine();
                 String[] tagsArr = tagsStr.split(",");
-                List<String> tags = List.of(tagsArr);
+                List<String> tags = Arrays.asList(tagsArr);
                 if(db.addNewMenuItem(name, description, price, tags)) {
                     System.out.println("Item added successfully");
                 }

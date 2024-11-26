@@ -1,3 +1,8 @@
+package payment;
+
+import main.DBController;
+import user.Member;
+
 public class Payment {
 
     private String paymentType;

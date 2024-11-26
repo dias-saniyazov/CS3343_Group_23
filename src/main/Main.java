@@ -1,9 +1,13 @@
+package main;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import app.Application;
+import app.ApplicationFactory;
 
 public class Main {
     public static void main(String[] args) {
+        System.out.println("Welcome to the Food Delivery System!");
         Scanner scanner = new Scanner(System.in);
        
         Application app = ApplicationFactory.createAndGetApplication("Client");

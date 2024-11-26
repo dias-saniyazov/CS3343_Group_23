@@ -1,3 +1,4 @@
+package main;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,8 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
+import user.*;
+import object.*;
 
 
 public class DBController {
@@ -46,7 +49,7 @@ public class DBController {
         MenuItem.setCounter(menu.size());
     }
 
-    private List<Member> loadMembers() {
+    public List<Member> loadMembers() {
         try (FileReader reader = new FileReader(MEMBERS)) {
             Type type = new TypeToken<ArrayList<Member>>() {}.getType();
             return new Gson().fromJson(reader, type);
@@ -55,7 +58,7 @@ public class DBController {
         }
     }
     
-    private List<Order> loadOrders() {
+    public List<Order> loadOrders() {
         try (FileReader reader = new FileReader(ORDERS)) {
             Type type = new TypeToken<ArrayList<Order>>() {}.getType();
             return new Gson().fromJson(reader, type);
@@ -64,7 +67,7 @@ public class DBController {
         }
     }
 
-    private List<MenuItem> loadMenu() {
+    public List<MenuItem> loadMenu() {
         try (FileReader reader = new FileReader(MENU)) {
             Type type = new TypeToken<ArrayList<MenuItem>>() {}.getType();
             return new Gson().fromJson(reader, type);
@@ -73,7 +76,7 @@ public class DBController {
         }
     }
 
-    boolean checkIfMemberExist(String username) {
+    public boolean checkIfMemberExist(String username) {
         return members.stream().anyMatch(m -> m.getUsername().equals(username));
     }
 
@@ -145,19 +148,19 @@ public class DBController {
         return true;
     }
 
-    List<MenuItem> viewMenu() {
+    public List<MenuItem> viewMenu() {
         return menu;
     }
 
-    List<Order> viewOrders() {
+    public List<Order> viewOrders() {
         return orders;
     }
 
-    List<Member> viewMembers(){
+    public List<Member> viewMembers(){
         return members;
     }
 
-    boolean addNewMenuItem(String name, String description, float price, List<String> tags) {
+    public boolean addNewMenuItem(String name, String description, float price, List<String> tags) {
         for (MenuItem menuItem : menu) {
             if (menuItem.getName().equals(name)) {
                 return false; // name already exists
@@ -176,7 +179,7 @@ public class DBController {
         return true;
     }
 
-    boolean addNewMenuItem(MenuItem item) {
+    public boolean addNewMenuItem(MenuItem item) {
         for (MenuItem menuItem : menu) {
             if (menuItem.getName().equals(item.getName())) {
                 return false; // name already exists
@@ -187,7 +190,7 @@ public class DBController {
         return true;
     }
 
-    Member validateMemberCredentials(String username, String password) {
+    public Member validateMemberCredentials(String username, String password) {
         for (Member member : members) {
             if (member.getUsername().equals(username) && member.getPassword().equals(password)) {
                 return member;

@@ -1,6 +1,8 @@
+package object;
 import java.util.ArrayList;
 import java.util.List;
-class MenuItem implements Observable {
+
+public class MenuItem implements Observable {
     private static int itemIdCounter = 1;
     private int menuItemId;
     private String name;

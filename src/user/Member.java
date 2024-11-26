@@ -1,18 +1,32 @@
+package user;
 import java.util.ArrayList;
 import java.util.List;
+import main.DBController;
+import object.*;
 
-class Member implements Observer {
+public class Member implements Observer {
     private static int memberIdCounter = 1;
     private int memberId;
     private MembershipState memberState;
     private String username;
     private String password;    
     private float balance;
-    private List<Order> orderHistory = new ArrayList<>();
+    private List<Order> orderHistory = loadOrders();
     private List<String> notifications = new ArrayList<>();
 
     public static void setCounter(int num) {
         Member.memberIdCounter = num;
+    }
+
+    private List<Order> loadOrders() {
+        List<Order> orders = new ArrayList<>();
+        DBController db = DBController.getInstance();
+        for (Order order : db.viewOrders()) {
+            if (order.getMemberId() == this.memberId) {
+                orders.add(order);
+            }
+        }
+        return orders;
     }
 
     public Member(String username, String password) {
@@ -31,7 +45,7 @@ class Member implements Observer {
         this.memberState = memberState;
     }
 
-    List<Order> viewOrderHistory() {
+    public List<Order> viewOrderHistory() {
         return orderHistory;
     }
 
@@ -68,7 +82,6 @@ class Member implements Observer {
 
     @Override
     public void update(Observable observable, String content) {
-        System.out.println("TESTING NOTIFICATION: " + content);
         notifications.add(content);
     }
 

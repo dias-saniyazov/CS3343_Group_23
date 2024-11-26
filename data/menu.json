@@ -1,1 +1,44 @@
-[{"menuItemId":0,"name":"","price":12.0,"tags":["b"],"description":"a"},{"menuItemId":1,"name":"a","price":3.0,"tags":["g","s","e"],"description":"asdf"},{"menuItemId":2,"name":"c","price":17.22,"tags":["a","b","c"],"description":"dfgkdjg"},{"menuItemId":3,"name":"kebab","price":25.0,"tags":["a","v"],"description":"asfsadas"}]
+[
+  {
+    "menuItemId": 0,
+    "name": "",
+    "price": 12.0,
+    "tags": ["b"],
+    "description": "a"
+  },
+  {
+    "menuItemId": 1,
+    "name": "a",
+    "price": 3.0,
+    "tags": ["g", "s", "e"],
+    "description": "asdf"
+  },
+  {
+    "menuItemId": 2,
+    "name": "c",
+    "price": 17.22,
+    "tags": ["a", "b", "c"],
+    "description": "dfgkdjg"
+  },
+  {
+    "menuItemId": 3,
+    "name": "kebab",
+    "price": 25.0,
+    "tags": ["a", "v"],
+    "description": "asfsadas"
+  },
+  {
+    "menuItemId": 4,
+    "name": "afk",
+    "price": 69.0,
+    "tags": ["one", "two", "three"],
+    "description": "i am going to be "
+  },
+  {
+    "menuItemId": 5,
+    "name": "diassssss",
+    "price": 150.0,
+    "tags": ["a", "b", "c", "d"],
+    "description": "aslkdjsa klasjd asjkl jask "
+  }
+]
