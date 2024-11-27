@@ -23,9 +23,27 @@ public class ClientApplication extends Application {
     public void viewMenu() {
         DBController db = DBController.getInstance();
         List<MenuItem> menu = db.viewMenu();
-        System.out.println("Menu:");
+
+        // Determine the maximum length of the lines to be printed
+        int maxLength = 0;
         for (MenuItem item : menu) {
-            System.out.println(item.getName() + ": " + item.getPrice());
+            int length = Math.max(item.getName().length(), item.getDescription().length());
+            length = Math.max(length, ("Price: $" + item.getPrice()).length());
+            length = Math.max(length, ("Tags: " + String.join(", ", item.getTags())).length());
+            maxLength = Math.max(maxLength, length);
+        }
+
+        // Create a separator line of the determined length
+        String separator = "-".repeat(maxLength * 2);
+
+        System.out.println("Menu:");
+        System.out.println(separator);
+        for (MenuItem item : menu) {
+            System.out.println("Name: " + item.getName());
+            System.out.println("Description: " + item.getDescription());
+            System.out.println("Price: $" + item.getPrice());
+            System.out.println("Tags: " + String.join(", ", item.getTags()));
+            System.out.println(separator);
         }
     }
 
@@ -41,7 +59,7 @@ public class ClientApplication extends Application {
             System.out.println("4. Exit");
             int choice;
             try{
-                choice = getIntInput(scanner);
+                choice = getIntInput(scanner, 4);
                 scanner.nextLine();  // Consume newline
             } catch(Exception e){
                 scanner.nextLine();  // Consume newline
@@ -72,8 +90,15 @@ public class ClientApplication extends Application {
                         System.out.println("Invalid login credentials.");
                         System.out.println("1. Try again");
                         System.out.println("2. Go back");
-                        int option = scanner.nextInt();
-                        scanner.nextLine();
+                        int option;
+                        try{
+                            option = getIntInput(scanner, 2);
+                            scanner.nextLine();  // Consume newline
+                        } catch(Exception e){
+                            scanner.nextLine();  // Consume newline
+                            System.out.println(e.getMessage());
+                            continue;
+                        }
                         if(option == 2){
                             break;
                         }
@@ -95,8 +120,15 @@ public class ClientApplication extends Application {
                         System.out.println("Username already exists.");
                         System.out.println("1. Try again");
                         System.out.println("2. Go back");
-                        int option = scanner.nextInt();
-                        scanner.nextLine();
+                        int option;
+                        try{
+                            option = getIntInput(scanner, 2);
+                            scanner.nextLine();  // Consume newline
+                        } catch(Exception e){
+                            scanner.nextLine();  // Consume newline
+                            System.out.println(e.getMessage());
+                            continue;
+                        }
                         if(option == 2){
                             break;
                         }
@@ -113,10 +145,10 @@ public class ClientApplication extends Application {
         scanner.close();
     }
     
-    private int getIntInput(Scanner scanner) throws InvalidInputException{
+    private int getIntInput(Scanner scanner, int num) throws InvalidInputException{
         try {
             int next = scanner.nextInt();
-            if(next > 4 || next < 0) throw new InvalidInputException(4);
+            if(next > num || next < 0) throw new InvalidInputException(2);
             return next;
         } catch (InputMismatchException e) {
             throw new InputMismatchException("Input valid command number!");

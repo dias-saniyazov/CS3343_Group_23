@@ -40,5 +40,12 @@
     "price": 150.0,
     "tags": ["a", "b", "c", "d"],
     "description": "aslkdjsa klasjd asjkl jask "
+  },
+  {
+    "menuItemId": 6,
+    "name": "sto",
+    "price": 100.0,
+    "tags": ["1", "2", "3"],
+    "description": "100"
   }
 ]

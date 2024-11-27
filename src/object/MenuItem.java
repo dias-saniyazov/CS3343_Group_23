@@ -9,6 +9,10 @@ public class MenuItem implements Observable {
     private float price;
     private List<String> tags = new ArrayList<>();
     private String description;
+    public String getDescription() {
+        return description;
+    }
+
     private List<Observer> observers = new ArrayList<>();
   
     
@@ -40,6 +44,10 @@ public class MenuItem implements Observable {
         for (Observer observer : observers) {
             observer.update(this, "Menu item was added: " + name);
         }
+    }
+
+    public List<String> getTags() {
+        return tags;
     }
 
     public String getMenuItemID() {

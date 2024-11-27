@@ -112,6 +112,8 @@ public class DBController {
     private void saveOrders() {
         try (FileWriter writer = new FileWriter(ORDERS)) {
             new Gson().toJson(orders, writer);
+            System.out.println("Orders saved");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -193,6 +195,7 @@ public class DBController {
     public Member validateMemberCredentials(String username, String password) {
         for (Member member : members) {
             if (member.getUsername().equals(username) && member.getPassword().equals(password)) {
+                member.loadOrders();
                 return member;
             }
         }

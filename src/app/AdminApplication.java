@@ -95,12 +95,30 @@ public class AdminApplication extends Application {
 
     }
 
-    void viewMenu() {
+    public void viewMenu() {
         DBController db = DBController.getInstance();
         List<MenuItem> menu = db.viewMenu();
-        System.out.println("Menu:");
+
+        // Determine the maximum length of the lines to be printed
+        int maxLength = 0;
         for (MenuItem item : menu) {
-            System.out.println(item.getName() + ": " + item.getPrice());
+            int length = Math.max(item.getName().length(), item.getDescription().length());
+            length = Math.max(length, ("Price: $" + item.getPrice()).length());
+            length = Math.max(length, ("Tags: " + String.join(", ", item.getTags())).length());
+            maxLength = Math.max(maxLength, length);
+        }
+
+        // Create a separator line of the determined length
+        String separator = "-".repeat(maxLength * 2);
+
+        System.out.println("Menu:");
+        System.out.println(separator);
+        for (MenuItem item : menu) {
+            System.out.println("Name: " + item.getName());
+            System.out.println("Description: " + item.getDescription());
+            System.out.println("Price: $" + item.getPrice());
+            System.out.println("Tags: " + String.join(", ", item.getTags()));
+            System.out.println(separator);
         }
     }
 

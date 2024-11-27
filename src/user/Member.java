@@ -11,22 +11,21 @@ public class Member implements Observer {
     private String username;
     private String password;    
     private float balance;
-    private List<Order> orderHistory = loadOrders();
+    private List<Order> orderHistory = new ArrayList<>();
     private List<String> notifications = new ArrayList<>();
 
     public static void setCounter(int num) {
         Member.memberIdCounter = num;
     }
 
-    private List<Order> loadOrders() {
-        List<Order> orders = new ArrayList<>();
+    public void loadOrders() {
+        orderHistory.clear();
         DBController db = DBController.getInstance();
         for (Order order : db.viewOrders()) {
             if (order.getMemberId() == this.memberId) {
-                orders.add(order);
+                orderHistory.add(order);
             }
         }
-        return orders;
     }
 
     public Member(String username, String password) {
@@ -36,13 +35,6 @@ public class Member implements Observer {
         this.password = password;
         this.memberState = MembershipState.STANDARD;
         this.balance = 0;
-    }
-
-    public Member(String username, String password, MembershipState memberState) {
-        this.memberId = memberIdCounter++;
-        this.username = username;
-        this.password = password;
-        this.memberState = memberState;
     }
 
     public List<Order> viewOrderHistory() {

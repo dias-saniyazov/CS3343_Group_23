@@ -8,6 +8,7 @@ import main.DBController;
 import object.*;
 import payment.PaymentController;
 import user.*;
+import java.util.Arrays;
 
 public class MemberApplication extends ClientApplication{
     private Member member;
@@ -28,22 +29,23 @@ public class MemberApplication extends ClientApplication{
         while (true) {
             System.out.println("****************************");
             System.out.println("1. View Menu");
-            System.out.println("2. Add Item to Cart");
-            System.out.println("3. View Cart");
-            System.out.println("4. Empty Cart");
-            System.out.println("5. Complete Order");
-            System.out.println("6. View Notifications");
-            System.out.println("7. View order history");
-            System.out.println("8. Top up Balance");
-            System.out.println("9. Upgrade Account to Premium");
-            System.out.println("10. Dowgrade Account to Standard Membership");
-            System.out.println("11. View Premium Membership Information");
-            System.out.println("12. Your Profile");
-            System.out.println("13. Logout");
+            System.out.println("2. Search item by tags");
+            System.out.println("3. Add Item to Cart");
+            System.out.println("4. View Cart");
+            System.out.println("5. Empty Cart");
+            System.out.println("6. Complete Order");
+            System.out.println("7. View Notifications");
+            System.out.println("8. View order history");
+            System.out.println("9. Top up Balance");
+            System.out.println("10. Upgrade Account to Premium");
+            System.out.println("11. Dowgrade Account to Standard Membership");
+            System.out.println("12. View Premium Membership Information");
+            System.out.println("13. Your Profile");
+            System.out.println("14. Logout");
             System.out.println("****************************");
             int choice;
             try{
-                choice = getIntInput(scanner);
+                choice = getIntInput(scanner, 14);
             } catch(InvalidInputException e){
                 System.out.println(e.getMessage());
                 continue;
@@ -52,12 +54,37 @@ public class MemberApplication extends ClientApplication{
             if (choice == 1) {
                 super.viewMenu();
             } else if (choice == 2) {
+                System.out.println("Enter tags (comma separated):");
+                scanner.nextLine(); // Consume newline
+                String tagsStr = scanner.nextLine();
+                String[] tagsArr = tagsStr.split(",");
+                List<String> tags = Arrays.asList(tagsArr);
+                List<MenuItem> menu = dbController.viewMenu();
+                System.out.println("Items with tags: " + tags);
+                boolean found = false;
+                for (MenuItem item : menu) {
+                    if (item.getTags().containsAll(tags)) {
+                        System.out.println(item.getName() + " - Price: " + item.getPrice());
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    System.out.println("No items found with tags: " + tags);
+                }
+            
+            } else if (choice == 3) {
                 while(true){
                     System.out.println("Enter item name:");
                     scanner.nextLine(); // Consume newline
                     String itemName = scanner.nextLine();
                     System.out.println("Enter quantity:");
-                    int quantity = scanner.nextInt();
+                    int quantity;
+                    try{
+                        quantity = getIntInput(scanner, 0);
+                    } catch(InvalidInputException e){
+                        System.out.println(e.getMessage());
+                        continue;
+                    }
                     scanner.nextLine(); // Consume newline
                     List<MenuItem> menu = dbController.viewMenu();
                     MenuItem selectedItem = null;
@@ -78,7 +105,7 @@ public class MemberApplication extends ClientApplication{
                         System.out.println("2. Go back");
                         int option;
                         try{
-                            option = getIntInput(scanner);
+                            option = getIntInput(scanner, 2);
                         } catch(InvalidInputException e){
                             System.out.println(e.getMessage());
                             continue;
@@ -88,7 +115,7 @@ public class MemberApplication extends ClientApplication{
                         }
                     }
                 }
-            } else if (choice == 3) {
+            } else if (choice == 4) {
                 System.out.println("********** CART ************");
                 if (cart.getItems().isEmpty()) {
                     System.out.println("Cart is empty.");
@@ -100,13 +127,19 @@ public class MemberApplication extends ClientApplication{
                         System.out.println(item + " - Quantity: " + quantity + ", Price: " + dbController.findPrice(item) * quantity);
                     }
                     System.out.println("____________________________");
-                    System.out.println("Total: " + cart.getTotal());
+                    System.out.println("Card Total: " + cart.getTotal());
+                    if (member.getMemberState() == MembershipState.PREMIUM) {
+                        System.out.println("Discount: 10%");
+                        System.out.println("Total: " + cart.getTotal() * 0.9);
+                    }else{
+                        System.out.println("Total: " + cart.getTotal());
+                    }
                     System.out.println("****************************");
                 }
-            } else if (choice == 4) {
+            } else if (choice == 5) {
                 cart.emptyCart();
                 System.out.println("Cart emptied.");
-            } else if (choice == 5) {
+            } else if (choice == 6) {
                 PaymentController paymentController = new PaymentController(dbController);
                 boolean isOrderCompleted = paymentController.checkout(member, cart);
                 if (isOrderCompleted) {
@@ -114,7 +147,7 @@ public class MemberApplication extends ClientApplication{
                 } else {
                     System.out.println("Failed to complete order.");
                 }
-            } else if (choice == 6) {
+            } else if (choice == 7) {
                 List<String> notifications = member.getNotifications();
                 if (notifications == null || notifications.isEmpty()) {
                     System.out.println("No new notifications.");
@@ -124,10 +157,10 @@ public class MemberApplication extends ClientApplication{
                         System.out.println(notification);
                     }
                 }
-            } else if (choice == 7) {
+            } else if (choice == 8) {
                 viewOrders(member);
             }
-            else if(choice == 8){
+            else if(choice == 9){
                 System.out.println("Enter amount to top up:");
                 try {
                     float amount = getFloatInput(scanner);
@@ -136,11 +169,12 @@ public class MemberApplication extends ClientApplication{
                     if(!isOrderCompleted){
                         System.out.println("Failed to top up balance.");
                     }
-                } catch (Exception e){
+                } catch(InvalidInputException e){
                     System.out.println(e.getMessage());
+                    continue;
                 }
             }
-            else if (choice == 9) {
+            else if (choice == 10) {
                 if (member.getMemberState() == MembershipState.PREMIUM) {
                     System.out.println("You are already a premium member.");
                 } else {
@@ -152,7 +186,7 @@ public class MemberApplication extends ClientApplication{
                     }
                 }
             }
-            else if (choice == 10){
+            else if (choice == 11){
                 if (member.getMemberState() == MembershipState.STANDARD) {
                     System.out.println("You are already a standard member.");
                 } else {
@@ -163,14 +197,14 @@ public class MemberApplication extends ClientApplication{
                     }
                 }
             }
-            else if(choice == 11){
+            else if(choice == 12){
                 System.out.println("****************************");
                 System.out.println("Premium Membership Information:");
                 System.out.println("1. Premium members get 10% off on all orders.");
                 System.out.println("2. Premium membership costs $100.");
                 System.out.println("****************************");
             }
-            else if(choice == 12){
+            else if(choice == 13){
                 System.out.println("****************************");
                 System.out.println("Your Profile:");
                 System.out.println("Username: " + member.getUsername());
@@ -178,7 +212,7 @@ public class MemberApplication extends ClientApplication{
                 System.out.println("Membership: " + member.getMemberState());
                 System.out.println("****************************");
             }
-            else if (choice == 13) {
+            else if (choice == 14) {
                 break;
             }
         }
@@ -209,7 +243,6 @@ public class MemberApplication extends ClientApplication{
         } else {
             System.out.println("Orders:");
             for (Order order : orders) {
-                System.out.println("Processing order ID: " + order.getOrderID()); // Debug statement
                 Map<String, Integer> items = order.getItems();
                 float totalCost = 0;
                 StringBuilder itemsList = new StringBuilder();
@@ -231,10 +264,12 @@ public class MemberApplication extends ClientApplication{
             System.out.println(sb.toString());
         }
     }
-    private int getIntInput(Scanner scanner) throws InvalidInputException{
+    private int getIntInput(Scanner scanner, int max) throws InvalidInputException{
         try {
             int next = scanner.nextInt();
-            if(next > 13 || next < 0) throw new InvalidInputException(13);
+            if(max != 0){
+                if(next > max || next < 0) throw new InvalidInputException(max);
+            }
             return next;
         } catch (InputMismatchException e) {
             System.out.println("Invalid input. Please enter a number.");
@@ -243,13 +278,15 @@ public class MemberApplication extends ClientApplication{
         }
     }
 
-    private float getFloatInput(Scanner scanner) {
+    private float getFloatInput(Scanner scanner) throws InvalidInputException{
         try {
-            return scanner.nextFloat();
+            float amount = scanner.nextFloat();
+            if(amount < 0) throw new InvalidInputException("Amount cannot be negative.");
+            return amount; 
         } catch (InputMismatchException e) {
             System.out.println("Invalid input. Please enter a valid amount.");
             //scanner.nextLine(); // Consume the invalid input
-            return -1;
+            throw new InvalidInputException("Invalid input. Please enter a valid amount.");
         }
     }
 }
