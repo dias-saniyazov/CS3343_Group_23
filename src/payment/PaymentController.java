@@ -91,7 +91,7 @@ public class PaymentController {
             System.out.println("You are already a premium member.");
             return false;
         }
-        if (amount < 100) {
+        if (member.getBalance() < 100) {
             System.out.println("Minimum top-up amount for premium membership is $100.");
             return false;
         }

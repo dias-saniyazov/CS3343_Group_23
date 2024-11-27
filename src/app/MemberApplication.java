@@ -147,9 +147,6 @@ public class MemberApplication extends ClientApplication{
                     try {
                         PaymentController paymentController = new PaymentController(dbController);
                         boolean isOrderCompleted = paymentController.topUpToPremium(member, 100);
-                        if(!isOrderCompleted){
-                            System.out.println("Failed to process payment.");
-                        }
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
