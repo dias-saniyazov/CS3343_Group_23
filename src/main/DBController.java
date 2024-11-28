@@ -7,10 +7,17 @@ import java.io.FileWriter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import user.*;
 import object.*;
 
@@ -52,7 +59,7 @@ public class DBController {
     public List<Member> loadMembers() {
         try (FileReader reader = new FileReader(MEMBERS)) {
             Type type = new TypeToken<ArrayList<Member>>() {}.getType();
-            return new Gson().fromJson(reader, type);
+            return getGson().fromJson(reader, type);
         } catch (IOException e) {
             return new ArrayList<>();
         }
@@ -61,7 +68,7 @@ public class DBController {
     public List<Order> loadOrders() {
         try (FileReader reader = new FileReader(ORDERS)) {
             Type type = new TypeToken<ArrayList<Order>>() {}.getType();
-            return new Gson().fromJson(reader, type);
+            return getGson().fromJson(reader, type);
         } catch (IOException e) {
             return new ArrayList<>();
         }
@@ -70,7 +77,7 @@ public class DBController {
     public List<MenuItem> loadMenu() {
         try (FileReader reader = new FileReader(MENU)) {
             Type type = new TypeToken<ArrayList<MenuItem>>() {}.getType();
-            return new Gson().fromJson(reader, type);
+            return getGson().fromJson(reader, type);
         } catch (IOException e) {
             return new ArrayList<>();
         }
@@ -82,7 +89,7 @@ public class DBController {
 
     private void saveMembers() {
         try (FileWriter writer = new FileWriter(MEMBERS)) {
-            new Gson().toJson(members, writer);
+            getGson().toJson(members, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -111,12 +118,16 @@ public class DBController {
 
     private void saveOrders() {
         try (FileWriter writer = new FileWriter(ORDERS)) {
-            new Gson().toJson(orders, writer);
-            System.out.println("Orders saved");
-
+            getGson().toJson(orders, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private Gson getGson() {
+        return new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .create();
     }
 
     public boolean createMember(String username, String password) {
@@ -147,6 +158,7 @@ public class DBController {
         }
         orders.add(order);
         saveOrders();
+        saveMembers();
         return true;
     }
 
@@ -242,6 +254,21 @@ public class DBController {
             }
         }
         return 0;
+    }
+    
+
+    public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
+        private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+        @Override
+        public void write(JsonWriter out, LocalDateTime value) throws IOException {
+            out.value(value.format(formatter));
+        }
+
+        @Override
+        public LocalDateTime read(JsonReader in) throws IOException {
+            return LocalDateTime.parse(in.nextString(), formatter);
+        }
     }
     
 }

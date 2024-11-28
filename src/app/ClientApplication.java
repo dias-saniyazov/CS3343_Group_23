@@ -9,17 +9,6 @@ import user.*;
 
 public class ClientApplication extends Application {
 
-    void register(String username, String password) {
-        DBController db = DBController.getInstance();
-        if (!db.checkIfMemberExist(username)) {
-            //Member newMember = new Member(username, password, Standard.getInstance());
-            db.createMember(username, password);
-            System.out.println("Registration successful. You can now log in.");
-        } else {
-            System.out.println("Username already exists.");
-        }
-    }
-
     public void viewMenu() {
         DBController db = DBController.getInstance();
         List<MenuItem> menu = db.viewMenu();
