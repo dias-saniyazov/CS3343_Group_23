@@ -16,28 +16,40 @@ import java.util.List;
 
 import static org.junit.Assertions.*;
 
-public class UpdateTest {
+public class NotifyObserversTest {
 
     private DBController dbController;
-    private Member newMember;
+    private Member newMember1;
+    private Member newMember2;
     private MenuItem newItem;
 
     @Before
     public void setUp() {
         dbController = DBController.getInstance();
+        newMember1 = new Member("testUser1", "password");
+        newMember2 = new Member("testUser2", "password");
         newItem = new MenuItem("Test Item", "Test Description", 5.99f, new ArrayList<>());
-        newMember = new Member("testUser", "password");
+        newItem.addObserver(newMember1);
+        newItem.addObserver(newMember2);
     }
     @Test
     public void testUpdateSuccess() {
-        newMember.update(newItem, newItem.getName());
-        List<String> notifications = newMember.getNotifications();
-        assertEquals(notifications.get(0), newItem.getName());
+        newItem.notifyObservers();
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add("Menu item was added: Test Item");
+        expectedList.add("Menu item was added: Test Item");
+
+        List<String> notifications = new ArrayList<>();
+        notifications.add(newMember1.getNotifications().get(0));
+        notifications.add(newMember2.getNotifications().get(0));
+        
+        assertEquals(notifications, expectedList);
     }
 
     @After
     public void removeItems(){
-        dbController.removeMember("testUser");
+        dbController.removeMember("testUser1");
+        dbController.removeMember("testUser2");
         dbController.removeNewMenuItem("Test Item");
     }
 }

@@ -15,7 +15,6 @@ import main.java.user.*;
 
 public class AdminApplication extends Application {
 
-
     @Override
     public void start() {
         DBController db = DBController.getInstance();
@@ -61,7 +60,7 @@ public class AdminApplication extends Application {
 
     }
 
-    void createMenuItem(Scanner scanner, DBController db) {
+    public void createMenuItem(Scanner scanner, DBController db) {
         System.out.println("Enter name of the item:");
         String name = scanner.nextLine();
         System.out.println("Enter description of the item:");

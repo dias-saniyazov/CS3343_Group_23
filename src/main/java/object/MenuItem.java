@@ -1,6 +1,7 @@
 package main.java.object;
 import java.util.ArrayList;
 import java.util.List;
+import main.java.user.Member;
 
 public class MenuItem implements Observable {
     private static int itemIdCounter = 1;
@@ -60,5 +61,9 @@ public class MenuItem implements Observable {
 
     public float getPrice() {
         return price;
+    }
+
+    public boolean isObserver(Member member){
+        return observers.contains(member);
     }
 }
