@@ -96,7 +96,7 @@ public class Member implements Observer {
         return balance;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(float balance) {
         this.balance = balance;
     }
 

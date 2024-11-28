@@ -59,13 +59,12 @@ public class MemberApplication extends ClientApplication{
             } else if (choice == 4) {
                 viewCart(dbController);
             } else if (choice == 5) {
-                member.getCart().emptyCart();
-                System.out.println("Cart emptied.");
+                emptyCart();
             } else if (choice == 6) {
                 makeOrder(dbController);
                 
             } else if (choice == 7) {
-                printNotfications();
+                getNotifications();
                 
             } else if (choice == 8) {
                 viewOrders(member);
@@ -90,12 +89,13 @@ public class MemberApplication extends ClientApplication{
             }
         }
     }
-    void topUp(Scanner scanner, DBController dbController){
+    public void topUp(Scanner scanner, DBController dbController){
         System.out.println("Enter amount to top up:");
         try {
             float amount = getFloatInput(scanner);
             PaymentController paymentController = new PaymentController(dbController);
             boolean isOrderCompleted = paymentController.topUpBalance(member, amount);
+
             if(!isOrderCompleted){
                 System.out.println("Failed to top up balance.");
             }
@@ -103,7 +103,7 @@ public class MemberApplication extends ClientApplication{
             System.out.println(e.getMessage());
         }
     }
-    void downgrade(DBController dbController){
+    public void downgrade(DBController dbController){
         if (member.getMemberState() == MembershipState.STANDARD) {
             System.out.println("You are already a standard member.");
         } else {
@@ -161,7 +161,7 @@ public class MemberApplication extends ClientApplication{
         System.out.println("2. Premium membership costs $100.");
         System.out.println("****************************");
     }
-    void printNotfications(){
+    public void getNotifications(){
         List<String> notifications = member.getNotifications();
         if (notifications == null || notifications.isEmpty()) {
             System.out.println("No new notifications.");
@@ -173,7 +173,12 @@ public class MemberApplication extends ClientApplication{
         }
     }
 
-    void upgrade(DBController dbController){
+    public void emptyCart(){
+        member.getCart().emptyCart();
+        System.out.println("Cart emptied.");
+    }
+
+    public void upgrade(DBController dbController){
         if (member.getMemberState() == MembershipState.PREMIUM) {
             System.out.println("You are already a premium member.");
         } else {
@@ -277,7 +282,7 @@ public class MemberApplication extends ClientApplication{
         }
     }
 
-    private void addItemToCart(Scanner scanner, DBController dbController){
+    public void addItemToCart(Scanner scanner, DBController dbController){
         while(true){
             System.out.println("Enter item name:");
             scanner.nextLine(); // Consume newline
@@ -286,11 +291,11 @@ public class MemberApplication extends ClientApplication{
             int quantity;
             try{
                 quantity = getIntInput(scanner, 0);
+                if(quantity <= 0) throw new InvalidInputException("Quantity must be greater than 0.");
             } catch(InvalidInputException e){
                 System.out.println(e.getMessage());
                 continue;
-            }
-            scanner.nextLine(); // Consume newline
+            } // Consume newline
             List<MenuItem> menu = dbController.viewMenu();
             MenuItem selectedItem = null;
             for (MenuItem item : menu) {

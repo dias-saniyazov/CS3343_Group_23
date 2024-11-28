@@ -1,16 +1,1 @@
-[
-  {
-    "orderID": 0,
-    "memberId": 1,
-    "orderTime": "2024-11-28T11:54:19",
-    "items": { "Egg tart": 3 },
-    "totalCost": 9.0
-  },
-  {
-    "orderID": 1,
-    "memberId": 0,
-    "orderTime": "2024-11-28T23:25:54",
-    "items": { "Kebab": 1 },
-    "totalCost": 8.99
-  }
-]
+[{"orderID":21,"memberId":4,"orderTime":"2024-11-29T03:45:19","items":{},"totalCost":0.0}]

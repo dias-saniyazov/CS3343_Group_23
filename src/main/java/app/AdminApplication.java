@@ -125,7 +125,7 @@ public class AdminApplication extends Application {
         System.out.println(sb.toString());
     }
 
-    void viewMembers() {
+    public void viewMembers() {
         DBController db = DBController.getInstance();
         List<Member> menu = db.viewMembers();
         System.out.println("Members:");
@@ -134,14 +134,14 @@ public class AdminApplication extends Application {
         }
     }
     
-    void viewAnalytics() {
+    public void viewAnalytics() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Choose period for analytics:");
         System.out.println("1. Last day");
         System.out.println("2. Last week");
         System.out.println("3. Last month");
         int choice = scanner.nextInt();
-        scanner.nextLine();
+        //scanner.nextLine();
 
         LocalDateTime now = LocalDateTime.now();
         final LocalDateTime startTime;

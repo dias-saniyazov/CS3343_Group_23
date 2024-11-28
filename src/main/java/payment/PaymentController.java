@@ -76,12 +76,18 @@ public class PaymentController {
                     return false;
             }
             Payment payment = new Payment(paymentType);
-            payment.makePaymentwithPaymentType(member, amount);
+            boolean paymentSuccess = payment.makePaymentwithPaymentType(member, amount);
 
-            System.out.println("Balance topped up successfully! Your new balance is: " + (member.getBalance()));
-            return true;
-        } catch (Exception e){
-            throw e;
+            if (paymentSuccess) {
+                System.out.println("Balance topped up successfully! Your new balance is: " + (member.getBalance()));
+                return true;
+            } else {
+                System.out.println("Failed to top up balance.");
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred during the top-up process: " + e.getMessage());
+            return false;
         }
         //scanner.close();
         

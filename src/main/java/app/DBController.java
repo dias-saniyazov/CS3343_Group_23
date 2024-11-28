@@ -83,6 +83,11 @@ public class DBController {
         }
     }
 
+    public void deleteOrders() {
+        orders = new ArrayList<>();
+        saveOrders();
+    }
+
     public boolean checkIfMemberExist(String username) {
         return members.stream().anyMatch(m -> m.getUsername().equals(username));
     }
@@ -237,9 +242,6 @@ public class DBController {
     }
 
     public boolean changeBalance(Member member, float amount) {
-        if (member == null) {
-            return false;
-        }
         for (Member m : members) {
             if (m.getUsername().equals(member.getUsername())) {
                 m.topUpBalance(amount);

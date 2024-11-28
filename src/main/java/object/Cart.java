@@ -1,8 +1,6 @@
 package main.java.object;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Cart {
@@ -25,8 +23,8 @@ public class Cart {
     // }
 
     public void addItem(MenuItem item, int quantity) {
-        if (items.containsKey(item)) {
-            items.put(item.getName(), items.get(item) + quantity);
+        if (items.containsKey(item.getName())) {
+            items.put(item.getName(), items.get(item.getName()) + quantity);
         } else {
             items.put(item.getName(), quantity);
         }

@@ -20,10 +20,6 @@ public class Order {
         Order.orderCount = num;
     }
 
-    public void setMemberId(int memberId) {
-        this.memberId = memberId;
-    }
-
 
     public Order(Member member, Cart cart) {
         this.orderID = Order.orderCount;
@@ -33,6 +29,10 @@ public class Order {
         this.orderTime = LocalDateTime.now().withNano(0);
         this.totalCost = cart.getTotal();
         member.addOrder(this);
+    }
+
+    public void changeOrderTime(LocalDateTime orderTime) {
+        this.orderTime = orderTime;
     }
 
     public int getOrderID() {
