@@ -1,13 +1,13 @@
 package main.java.app;
-import main.java.exception.InvalidInputException;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import main.java.exception.InvalidInputException;
 import main.java.object.*;
 import main.java.payment.PaymentController;
 import main.java.user.*;
-import java.util.Arrays;
 
 public class MemberApplication extends ClientApplication{
     private Member member;
@@ -267,7 +267,7 @@ public class MemberApplication extends ClientApplication{
         try {
             int next = scanner.nextInt();
             if(max != 0){
-                if(next > max || next < 0) throw new InvalidInputException(max);
+                if(next > max || next <= 0) throw new InvalidInputException(max);
             }
             return next;
         } catch (InputMismatchException e) {

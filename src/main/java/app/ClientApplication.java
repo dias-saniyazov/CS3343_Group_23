@@ -1,8 +1,8 @@
 package main.java.app;
-import main.java.exception.InvalidInputException;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import main.java.exception.InvalidInputException;
 import main.java.object.*;
 import main.java.user.*;
 
@@ -65,7 +65,8 @@ public class ClientApplication extends Application {
                     Member member = dbController.validateMemberCredentials(username, password);
                     if(member != null){
                         if (member.getMemberState() == MembershipState.ADMIN) {
-                            Application adminApplication = ApplicationFactory.createAndGetApplication("Admin");
+                            ApplicationFactory appFactory = ApplicationFactory.getInstance();
+                            Application adminApplication = appFactory.createAndGetApplication("Admin");
                             adminApplication.start();
                             break;
                         }
@@ -136,7 +137,7 @@ public class ClientApplication extends Application {
     private int getIntInput(Scanner scanner, int num) throws InvalidInputException{
         try {
             int next = scanner.nextInt();
-            if(next > num || next < 0) throw new InvalidInputException(2);
+            if(next > num || next <= 0) throw new InvalidInputException(num);
             return next;
         } catch (InputMismatchException e) {
             throw new InputMismatchException("Input valid command number!");
