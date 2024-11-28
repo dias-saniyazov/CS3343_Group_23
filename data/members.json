@@ -1,1 +1,1 @@
-[{"memberId":0,"memberState":"ADMIN","username":"admin","password":"admin","balance":0.0,"orderHistory":[],"notifications":[]}]
+[{"memberId":0,"memberState":"ADMIN","username":"admin","password":"admin","balance":0.0,"orderHistory":[],"notifications":[]},{"memberId":1,"memberState":"STANDARD","username":"dias","password":"1","balance":41.0,"orderHistory":[{"orderID":0,"memberId":1,"orderTime":"2024-11-28T11:54:19","items":{"Egg tart":3},"totalCost":9.0}],"notifications":[]}]
