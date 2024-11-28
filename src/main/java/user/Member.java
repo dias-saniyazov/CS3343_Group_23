@@ -11,13 +11,13 @@ public class Member implements Observer {
     private String username;
     private String password;    
     private float balance;
+    private Cart cart;
     private List<Order> orderHistory = new ArrayList<>();
     private List<String> notifications = new ArrayList<>();
 
     public static void setCounter(int num) {
         Member.memberIdCounter = num;
     }
-
     public void loadOrders() {
         orderHistory.clear();
         DBController db = DBController.getInstance();
@@ -35,10 +35,14 @@ public class Member implements Observer {
         this.password = password;
         this.memberState = MembershipState.STANDARD;
         this.balance = 0;
+        this.cart = new Cart();
     }
 
     public List<Order> viewOrderHistory() {
         return orderHistory;
+    }
+    public Cart getCart(){
+        return cart;
     }
 
     public void addOrder(Order order) {
@@ -103,7 +107,10 @@ public class Member implements Observer {
         }
         else{
             System.out.println("Balance deducted successfully!");
-        }
-        
+        }   
+    }
+
+    public void addToCart(MenuItem item, int quantity) {
+        cart.addItem(item, quantity);
     }
 }

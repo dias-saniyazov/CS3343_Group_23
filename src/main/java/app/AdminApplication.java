@@ -7,9 +7,10 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Collectors;    
+import java.util.stream.Collectors;
 import main.java.exception.InvalidInputException;
 import main.java.object.*;
+import main.java.service.CommandService;
 import main.java.user.*;
 
 public class AdminApplication extends Application {
@@ -20,6 +21,7 @@ public class AdminApplication extends Application {
         DBController db = DBController.getInstance();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Admin panel");
+        CommandService command = new CommandService();
         while(true) {
             System.out.println("****************************");
             System.out.println("1. Create menu item");
@@ -38,30 +40,10 @@ public class AdminApplication extends Application {
             }
             scanner.nextLine();
             if (choice == 1) {
-                System.out.println("Enter name of the item:");
-                String name = scanner.nextLine();
-                System.out.println("Enter description of the item:");
-                String description = scanner.nextLine();
-                System.out.println("Enter price of the item:");
-                
-                String priceInput = scanner.nextLine(); // Read price as a string to handle both "./," formats
-                float price = 0;
-                priceInput = priceInput.replace(",", ".");
-                price = Float.parseFloat(priceInput);
-
-                System.out.println("Enter tags of the item (comma separated):");
-                String tagsStr = scanner.nextLine();
-                String[] tagsArr = tagsStr.split(",");
-                List<String> tags = Arrays.asList(tagsArr);
-                if(db.addNewMenuItem(name, description, price, tags)) {
-                    System.out.println("Item added successfully");
-                }
-                else {
-                    System.out.println("Failed to add item, item with same name already exists");
-                } 
+                createMenuItem(scanner, db);
             }
             else if (choice == 2) {
-                viewMenu();
+                command.viewMenu();
             }
             else if (choice == 3) { 
                 viewOrders();
@@ -79,6 +61,30 @@ public class AdminApplication extends Application {
 
     }
 
+    void createMenuItem(Scanner scanner, DBController db) {
+        System.out.println("Enter name of the item:");
+        String name = scanner.nextLine();
+        System.out.println("Enter description of the item:");
+        String description = scanner.nextLine();
+        System.out.println("Enter price of the item:");
+        
+        String priceInput = scanner.nextLine(); // Read price as a string to handle both "./," formats
+        float price = 0;
+        priceInput = priceInput.replace(",", ".");
+        price = Float.parseFloat(priceInput);
+
+        System.out.println("Enter tags of the item (comma separated):");
+        String tagsStr = scanner.nextLine();
+        String[] tagsArr = tagsStr.split(",");
+        List<String> tags = Arrays.asList(tagsArr);
+        if(db.addNewMenuItem(name, description, price, tags)) {
+            System.out.println("Item added successfully");
+        }
+        else {
+            System.out.println("Failed to add item, item with same name already exists");
+        } 
+    }
+
     private static int getIntInput(Scanner scanner) throws InvalidInputException {
         try {
             int n = scanner.nextInt();
@@ -93,32 +99,6 @@ public class AdminApplication extends Application {
 
     }
 
-    public void viewMenu() {
-        DBController db = DBController.getInstance();
-        List<MenuItem> menu = db.viewMenu();
-
-        // Determine the maximum length of the lines to be printed
-        int maxLength = 0;
-        for (MenuItem item : menu) {
-            int length = Math.max(item.getName().length(), item.getDescription().length());
-            length = Math.max(length, ("Price: $" + item.getPrice()).length());
-            length = Math.max(length, ("Tags: " + String.join(", ", item.getTags())).length());
-            maxLength = Math.max(maxLength, length);
-        }
-
-        // Create a separator line of the determined length
-        String separator = "-".repeat(maxLength * 2);
-
-        System.out.println("Menu:");
-        System.out.println(separator);
-        for (MenuItem item : menu) {
-            System.out.println("Name: " + item.getName());
-            System.out.println("Description: " + item.getDescription());
-            System.out.println("Price: $" + item.getPrice());
-            System.out.println("Tags: " + String.join(", ", item.getTags()));
-            System.out.println(separator);
-        }
-    }
 
     void viewOrders() {
         StringBuilder sb = new StringBuilder();

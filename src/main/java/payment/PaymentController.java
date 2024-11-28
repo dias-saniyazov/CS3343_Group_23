@@ -1,8 +1,8 @@
 package main.java.payment;
-import main.java.exception.InvalidInputException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import main.java.app.DBController;
+import main.java.exception.InvalidInputException;
 import main.java.object.*;
 import main.java.user.*;
 public class PaymentController {
@@ -102,7 +102,7 @@ public class PaymentController {
         System.out.println("Congratulations! You are now a premium member!");
         return true;
     }
-    public boolean toDowngradeToStandard(Member member) {
+    public boolean downgradeToStandard(Member member) {
         if (member.getMemberState() == MembershipState.STANDARD) {
             System.out.println("You are already a standard member.");
             return false;

@@ -8,6 +8,7 @@
         "lib\\junit-4.13.2.jar",
         "c:\\Users\\z004zafa\\Desktop\\projects\\CS3343_Group_23\\lib\\gson-2.11.0.jar"
     ],
-    "java.dependency.packagePresentation": "hierarchical"
+    "java.dependency.packagePresentation": "hierarchical",
+    "java.debug.settings.onBuildFailureProceed": true
     
 }

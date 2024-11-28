@@ -95,6 +95,7 @@ public class DBController {
         }
     }
 
+
     private void saveMenu() {
         Gson gson = new GsonBuilder()
             .addSerializationExclusionStrategy(new ExclusionStrategy() {
@@ -161,7 +162,6 @@ public class DBController {
         saveMembers();
         return true;
     }
-
     public List<MenuItem> viewMenu() {
         return menu;
     }
@@ -237,8 +237,11 @@ public class DBController {
     }
 
     public boolean changeBalance(Member member, float amount) {
+        if (member == null) {
+            return false;
+        }
         for (Member m : members) {
-            if (m.getUsername() == member.getUsername()) {
+            if (m.getUsername().equals(member.getUsername())) {
                 m.topUpBalance(amount);
                 saveMembers();
                 return true;
