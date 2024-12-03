@@ -1,5 +1,6 @@
 package main.java.service;
 
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -10,10 +11,10 @@ import main.java.user.*;
 
 
 public class CommandService{
-    Scanner scanner = new Scanner(System.in);
+    // Scanner scanner = new Scanner(System.in);
     DBController dbController = DBController.getInstance();
 
-    public void login(){
+    public void login(Scanner scanner){
         while(true){
             System.out.println("Enter username:");
             String username = scanner.nextLine();
@@ -24,12 +25,12 @@ public class CommandService{
                 if (member.getMemberState() == MembershipState.ADMIN) {
                     ApplicationFactory appFactory = ApplicationFactory.getInstance();
                     Application adminApplication = appFactory.createAndGetApplication("Admin");
-                    adminApplication.start();
+                    adminApplication.start(scanner);
                     break;
                 }
                 else {
                     MemberApplication memberApplication = new MemberApplication(member);
-                    memberApplication.start();
+                    memberApplication.start(scanner);
                     break;
                 }
             } else {
@@ -52,7 +53,7 @@ public class CommandService{
         }
     }
 
-    public void register(){
+    public void register(Scanner scanner){
         while (true) {
             System.out.println("Registration");
             System.out.println("Enter username:");
@@ -65,17 +66,19 @@ public class CommandService{
                 System.out.println("Registration successful. You can now log in.");
                 break;
             } else {
+                int option = 0;
                 System.out.println("Username already exists.");
-                System.out.println("1. Try again");
-                System.out.println("2. Go back");
-                int option;
-                try{
-                    option = getIntInput(scanner, 2);
-                    scanner.nextLine();  // Consume newline
-                } catch(Exception e){
-                    scanner.nextLine();  // Consume newline
-                    System.out.println(e.getMessage());
-                    continue;
+                while(true){
+                    System.out.println("1. Try again");
+                    System.out.println("2. Go back");
+                    try{
+                        option = getIntInput(scanner, 2);
+                        scanner.nextLine();  // Consume newline
+                        break;
+                    } catch(Exception e){
+                        scanner.nextLine();  // Consume newline
+                        System.out.println(e.getMessage());
+                    }
                 }
                 if(option == 2){
                     break;
@@ -117,6 +120,27 @@ public class CommandService{
             return next;
         } catch (InputMismatchException e) {
             throw new InputMismatchException("Input valid command number!");
+        }
+    }
+
+    public void searchItemByTags(Scanner scanner) {
+        DBController dbController = DBController.getInstance();
+        System.out.println("Enter tags (comma separated):");
+        scanner.nextLine(); // Consume newline
+        String tagsStr = scanner.nextLine();
+        String[] tagsArr = tagsStr.split(",");
+        List<String> tags = Arrays.asList(tagsArr);
+        List<MenuItem> menu = dbController.viewMenu();
+        System.out.println("Items with tags: " + tags);
+        boolean found = false;
+        for (MenuItem item : menu) {
+            if (item.getTags().containsAll(tags)) {
+                System.out.println(item.getName() + " - Price: " + item.getPrice());
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No items found with tags: " + tags);
         }
     }
 }

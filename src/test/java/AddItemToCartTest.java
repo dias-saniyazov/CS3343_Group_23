@@ -26,29 +26,26 @@ public class AddItemToCartTest {
     @Before
     public void setUp() {
         dbController = DBController.getInstance();
-        member = dbController.validateMemberCredentials("testUser", "password");
+        member = dbController.validateMemberCredentials("agzhan", "1");
         memberApplication = new MemberApplication(member);
     }
 
     @Test
     public void testAddItemToCart() throws InvalidInputException {
-        MenuItem menuItem = new MenuItem("Pizza", "Cheesy Italian pizza with tomatoes and salami", 15.99f, Arrays.asList("italian", "pizza", "salami", "cheese"));
-        dbController.addNewMenuItem(menuItem);
-
-        String input = "Pizza\n2\n";
+        String input = "\nPizza\n2\n";
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
         Scanner scanner = new Scanner(System.in);
 
         memberApplication.addItemToCart(scanner, dbController);
-
-        assertTrue(member.getCart().getItems().containsKey(menuItem.getName()));
-        assertEquals(2, (int) member.getCart().getItems().get(menuItem.getName()));
+        
+        assertTrue(member.getCart().getItems().containsKey("Pizza"));
+        assertEquals(2, (int) member.getCart().getItems().get("Pizza"));
     }
 
     @Test
     public void testAddItemToCartItemNotFound() throws InvalidInputException {
-        String input = "NonExistentItem\n2\n1\nNonExistentItem\n2\n";
+        String input = "NonExistentItem\n\n2\n1\nNonExistentItem\n\n2\n2\n";
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
         Scanner scanner = new Scanner(System.in);
@@ -60,17 +57,14 @@ public class AddItemToCartTest {
 
     @Test
     public void testAddItemToCartInvalidQuantity() throws InvalidInputException {
-        MenuItem menuItem = new MenuItem("Pizza", "Cheesy Italian pizza with tomatoes and salami", 15.99f, Arrays.asList("italian", "pizza", "salami", "cheese"));
-        dbController.addNewMenuItem(menuItem);
-
-        String input = "Pizza\n-1\n";
+        String input = "Kebab\n\n0\nKebab\n\n2\n";
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
         Scanner scanner = new Scanner(System.in);
 
         memberApplication.addItemToCart(scanner, dbController);
 
-        assertTrue(member.getCart().getItems().containsKey(menuItem.getName()));
-        assertEquals(2, (int) member.getCart().getItems().get(menuItem.getName()));
+        assertTrue(member.getCart().getItems().containsKey("Kebab"));
+        assertEquals(2, (int) member.getCart().getItems().get("Kebab"));
     }
 }

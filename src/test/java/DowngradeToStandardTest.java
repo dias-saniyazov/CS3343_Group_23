@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 
-public class DowngradeToStandartTest {
+public class DowngradeToStandardTest {
     private DBController dbController;
     private PaymentController paymentController;
     private Member member;

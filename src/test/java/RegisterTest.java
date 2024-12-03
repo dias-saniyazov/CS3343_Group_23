@@ -1,17 +1,14 @@
 package test.java;
 import main.java.service.CommandService;
 import main.java.app.DBController;
-import main.java.exception.InvalidInputException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
-
-import static org.junit.Assert.*;
 
 
 
@@ -20,14 +17,15 @@ import static org.junit.Assert.*;
 public class RegisterTest {
     private DBController dbController;
     private CommandService commandService;
-    private Scanner scanner;
-
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
 
     @Before
     public void setUp() {
-        dbController = DBController.getInstance();  
+        dbController = DBController.getInstance();
+        dbController.deleteMember("newuser");  
         commandService = new CommandService(); 
+        System.setOut(new PrintStream(outContent));
         // Assume CommandService uses DBController.getInstance(), mock static if necessary
     }
 
@@ -37,57 +35,44 @@ public class RegisterTest {
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
         Scanner scanner = new Scanner(System.in);
-        in = new ByteArrayInputStream(input.getBytes());
-        System.setIn(in);
 
-        commandService.register();
-        assertTrue(dbController.validateMemberCredentials(input, input) != null);
+        commandService.register(scanner);
+        assertTrue(dbController.validateMemberCredentials("newuser", "password").getUsername().equals("newuser"));
     }
 
-    // @Test
-    // public void testRegisterUsernameExistsTryAgain() {
-    //     String input = "existinguser\npassword\n1\nnewuser\npassword\n";
-    //     System.setIn(new ByteArrayInputStream(input.getBytes()));
+    @Test
+    public void testRegisterUsernameExistsTryAgain() {
+        dbController.deleteMember("newuser");
+        String input = "testUser\npassword\n1\nnewuser\npassword\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+        Scanner scanner = new Scanner(System.in);
 
-    //     when(dbController.createMember("existinguser", "password")).thenReturn(false);
-    //     when(dbController.createMember("newuser", "password")).thenReturn(true);
+        commandService.register(scanner);
+        assertTrue(outContent.toString().contains("Registration successful. You can now log in."));
+    }
 
-    //     commandService.register();
+    @Test
+    public void testRegisterUsernameExistsGoBack() {
+        String input = "testUser\npassword\n2\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        Scanner scanner = new Scanner(System.in);
 
-    //     verify(dbController).createMember("existinguser", "password");
-    //     verify(dbController).createMember("newuser", "password");
-    //     assertTrue(outContent.toString().contains("Registration successful. You can now log in."));
-    // }
+        commandService.register(scanner);
+        assertTrue(outContent.toString().contains("Username already exists."));
+    }
 
-    // @Test
-    // public void testRegisterUsernameExistsGoBack() {
-    //     String input = "existinguser\npassword\n2\n";
-    //     System.setIn(new ByteArrayInputStream(input.getBytes()));
+    @Test
+    public void testRegisterIncorrectInput() {
+        String input = "\ntestUser\npassword\n3\n2\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        Scanner scanner = new Scanner(System.in);
+        commandService.register(scanner);
+        assertTrue(outContent.toString().contains("Input valid command number!"));
+    }
 
-    //     when(dbController.createMember("existinguser", "password")).thenReturn(false);
-
-    //     commandService.register();
-
-    //     verify(dbController).createMember("existinguser", "password");
-    //     assertTrue(outContent.toString().contains("Username already exists."));
-    // }
-
-    // @Test
-    // public void testRegisterInvalidInput() {
-    //     String input = "existinguser\npassword\ninvalid\n2\n";
-    //     System.setIn(new ByteArrayInputStream(input.getBytes()));
-
-    //     when(dbController.createMember("existinguser", "password")).thenReturn(false);
-
-    //     commandService.register();
-
-    //     verify(dbController).createMember("existinguser", "password");
-    //     assertTrue(outContent.toString().contains("Input valid command number!"));
-    // }
-
-    // @After
-    // public void tearDown() {
-    //     System.setOut(originalOut);
-    //     System.setIn(originalIn);
-    // }
+    @After
+    public void restoreStreams() {
+        System.setOut(originalOut);
+    }
 }

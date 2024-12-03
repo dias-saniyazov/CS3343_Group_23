@@ -7,10 +7,8 @@ import main.java.service.CommandService;
 public class ClientApplication extends Application {
 
     @Override
-    public void start() {
-        DBController dbController = DBController.getInstance();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Welcome to the Restaurant Booking System");
+    public void start(Scanner scanner) {
+        System.out.println("Welcome to the Food Delivery System!");
         CommandService command = new CommandService();
         while (true) {
             System.out.println("1. Log In");
@@ -28,9 +26,9 @@ public class ClientApplication extends Application {
             }
             
             if (choice == 1) {
-                command.login();
+                command.login(scanner);
             } else if (choice == 2) {
-                command.register();
+                command.register(scanner);
             } else if (choice == 3) {
                 command.viewMenu();
             }

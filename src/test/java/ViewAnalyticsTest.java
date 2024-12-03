@@ -6,6 +6,8 @@ import main.java.user.Member;
 import org.junit.Before;
 import org.junit.Test;
 import java.time.LocalDateTime;
+import java.util.Scanner;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -39,7 +41,7 @@ public class ViewAnalyticsTest {
         String input = "1";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
-        adminApp.viewAnalytics();
+        adminApp.viewAnalytics(new Scanner(System.in));
         assertTrue(outContent.toString().contains("Analytics for the selected period:"));
     }
 
@@ -52,7 +54,7 @@ public class ViewAnalyticsTest {
         String input = "2";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
-        adminApp.viewAnalytics();
+        adminApp.viewAnalytics(new Scanner(System.in));
         assertTrue(outContent.toString().contains("Analytics for the selected period:"));
     }
 
@@ -65,7 +67,7 @@ public class ViewAnalyticsTest {
         String input = "3";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
-        adminApp.viewAnalytics();
+        adminApp.viewAnalytics(new Scanner(System.in));
         assertTrue(outContent.toString().contains("Analytics for the selected period:"));
     }
 
@@ -78,7 +80,7 @@ public class ViewAnalyticsTest {
         String input = "4";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
-        adminApp.viewAnalytics();
+        adminApp.viewAnalytics(new Scanner(System.in));
         assertTrue(outContent.toString().contains("Invalid choice"));
     }
 
@@ -91,7 +93,7 @@ public class ViewAnalyticsTest {
         String input = "3";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
-        adminApp.viewAnalytics();
+        adminApp.viewAnalytics(new Scanner(System.in));
         assertTrue(outContent.toString().contains("No orders found for the selected period."));
     }
 }

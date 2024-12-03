@@ -17,9 +17,8 @@ public class MemberApplication extends ClientApplication{
         this.member = member;
     }
     @Override
-    public void start() {
+    public void start(Scanner scanner) {
         DBController dbController = DBController.getInstance();
-        Scanner scanner = new Scanner(System.in);
 
         CommandService command = new CommandService();
         System.out.println("Welcome " + member.getUsername());
@@ -57,7 +56,7 @@ public class MemberApplication extends ClientApplication{
                 addItemToCart(scanner, dbController);
                 
             } else if (choice == 4) {
-                viewCart(dbController);
+                viewCart();
             } else if (choice == 5) {
                 emptyCart();
             } else if (choice == 6) {
@@ -123,7 +122,8 @@ public class MemberApplication extends ClientApplication{
             System.out.println("Failed to complete order.");
         }
     }
-    void viewCart(DBController dbController){
+    public void viewCart(){
+        DBController dbController = DBController.getInstance();
         System.out.println("********** CART ************");
         Cart cart = member.getCart();
         if (cart.getItems().isEmpty()) {
@@ -189,19 +189,6 @@ public class MemberApplication extends ClientApplication{
                 System.out.println(e.getMessage());
             }
         }
-    }
-    boolean createOrder(Member member, Cart cart) {
-        if (cart.getItems().isEmpty()) {
-            System.out.println("Cart is empty. Cannot create order.");
-            return false;
-        }
-        Order order = new Order(member, cart);
-        DBController db = DBController.getInstance();
-        boolean success = db.createTransaction(order);
-        if (success) {
-            System.out.println("Order created successfully!");
-        }
-        return success;
     }
 
     void searchItemByTags(Scanner scanner, DBController dbController) {

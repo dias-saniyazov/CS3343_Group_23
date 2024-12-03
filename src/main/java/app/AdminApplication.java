@@ -17,9 +17,8 @@ public class AdminApplication extends Application {
 
 
     @Override
-    public void start() {
+    public void start(Scanner scanner) {
         DBController db = DBController.getInstance();
-        Scanner scanner = new Scanner(System.in);
         System.out.println("Admin panel");
         CommandService command = new CommandService();
         while(true) {
@@ -52,7 +51,7 @@ public class AdminApplication extends Application {
                 viewMembers();
             }
             else if (choice == 5) { 
-                viewAnalytics();
+                viewAnalytics(scanner);
             }
             else if (choice == 6) {
                 break;
@@ -68,21 +67,31 @@ public class AdminApplication extends Application {
         String description = scanner.nextLine();
         System.out.println("Enter price of the item:");
         
+        
         String priceInput = scanner.nextLine(); // Read price as a string to handle both "./," formats
         float price = 0;
         priceInput = priceInput.replace(",", ".");
-        price = Float.parseFloat(priceInput);
-
-        System.out.println("Enter tags of the item (comma separated):");
-        String tagsStr = scanner.nextLine();
-        String[] tagsArr = tagsStr.split(",");
-        List<String> tags = Arrays.asList(tagsArr);
-        if(db.addNewMenuItem(name, description, price, tags)) {
-            System.out.println("Item added successfully");
+        try {
+            price = Float.parseFloat(priceInput);
+            if(price < 0) throw new InvalidInputException("Price cannot be negative.");
+            System.out.println("Enter tags of the item (comma separated):");
+            String tagsStr = scanner.nextLine();
+            String[] tagsArr = tagsStr.split(",");
+            List<String> tags = Arrays.asList(tagsArr);
+            if(db.addNewMenuItem(name, description, price, tags)) {
+                System.out.println("Item added successfully");
+            }
+            else {
+                System.out.println("Failed to add item, item with same name already exists");
+            } 
+        } catch(InvalidInputException e){
+            System.out.println(e.getMessage());
+        }catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a valid amount.");
+            //scanner.nextLine(); // Consume the invalid input
         }
-        else {
-            System.out.println("Failed to add item, item with same name already exists");
-        } 
+        
+        
     }
 
     private static int getIntInput(Scanner scanner) throws InvalidInputException {
@@ -98,9 +107,20 @@ public class AdminApplication extends Application {
         } 
 
     }
+    private float getFloatInput(Scanner scanner) throws InvalidInputException{
+        try {
+            float amount = scanner.nextFloat();
+            if(amount < 0) throw new InvalidInputException("Amount cannot be negative.");
+            return amount; 
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid amount.");
+            //scanner.nextLine(); // Consume the invalid input
+            throw new InvalidInputException("Invalid input. Please enter a valid amount.");
+        }
+    }
 
 
-    void viewOrders() {
+    public void viewOrders() {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("%-10s %-10s %-20s %-50s %-10s\n", "orderID", "memberID", "orderTime", "items", "Total"));
         DBController db = DBController.getInstance();
@@ -134,8 +154,7 @@ public class AdminApplication extends Application {
         }
     }
     
-    public void viewAnalytics() {
-        Scanner scanner = new Scanner(System.in);
+    public void viewAnalytics(Scanner scanner) {
         System.out.println("Choose period for analytics:");
         System.out.println("1. Last day");
         System.out.println("2. Last week");

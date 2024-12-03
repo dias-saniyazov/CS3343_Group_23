@@ -260,9 +260,19 @@ public class DBController {
         }
         return 0;
     }
+
+    public void deleteMember(String username) {
+        for (Member member : members) {
+            if (member.getUsername().equals(username)) {
+                members.remove(member);
+                saveMembers();
+                return;
+            }
+        }
+    }
     
 
-    public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
+    public static class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
         private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
         @Override

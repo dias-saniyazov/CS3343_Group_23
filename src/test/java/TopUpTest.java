@@ -21,6 +21,7 @@ public class TopUpTest {
     @Before
     public void setUp() {
         dbController = DBController.getInstance();
+        dbController.createMember("testUser", "password");
         member = dbController.validateMemberCredentials("testUser", "password");
         memberApp = new MemberApplication(member);
     } 
