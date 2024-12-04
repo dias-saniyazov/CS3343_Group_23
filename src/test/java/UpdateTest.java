@@ -37,7 +37,6 @@ public class UpdateTest {
 
     @After
     public void removeItems(){
-        dbController.removeMember("testUser");
         dbController.removeNewMenuItem("Test Item");
     }
 }

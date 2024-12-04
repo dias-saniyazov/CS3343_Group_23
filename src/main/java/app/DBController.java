@@ -147,16 +147,16 @@ public class DBController {
         return true;
     }
 
-    // public boolean loginMember(String username, String password) {
-    //     for (Member member : members) {
-    //         System.out.println(member.getUsername());
-    //         System.out.println(member.getPassword());
-    //         if (member.getUsername().equals(username) && member.getPassword().equals(password)) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
+    public boolean removeMember(String username) {
+        for (Member member : members) {
+            if (member.getUsername().equals(username)) {
+                members.remove(member); 
+                saveMembers();
+                return true;
+            }
+        }
+        return false;
+    }
 
     public boolean createTransaction(Order order) {
         if(orders == null) {
@@ -180,6 +180,9 @@ public class DBController {
     }
 
     public boolean addNewMenuItem(String name, String description, float price, List<String> tags) {
+        if(name.strip().equals("") || price < 0) {
+            return false;
+        }
         for (MenuItem menuItem : menu) {
             if (menuItem.getName().equals(name)) {
                 return false; // name already exists
@@ -199,12 +202,23 @@ public class DBController {
     }
 
     public boolean addNewMenuItem(MenuItem item) {
+        if(item.getName().strip().equals("") || item.getPrice() < 0) {
+            return false;
+        }
         for (MenuItem menuItem : menu) {
             if (menuItem.getName().equals(item.getName())) {
                 return false; // name already exists
             }
         }
         menu.add(item);
+        for (Member member : members) {
+            if (!member.getMemberState().equals(MembershipState.ADMIN)) {
+                item.addObserver(member);
+            }
+        }
+        item.notifyObservers();
+
+        saveMembers();
         saveMenu();
         return true;
     }
@@ -228,6 +242,17 @@ public class DBController {
             }
         }
         return false; // User not found
+    }
+
+    public boolean removeNewMenuItem(String name) {
+        for (MenuItem menuItem : menu) {
+            if (menuItem.getName().equals(name)) {
+                menu.remove(menuItem);
+                saveMenu();
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean downgradeMember(Member member) {

@@ -48,8 +48,6 @@ public class NotifyObserversTest {
 
     @After
     public void removeItems(){
-        dbController.removeMember("testUser1");
-        dbController.removeMember("testUser2");
         dbController.removeNewMenuItem("Test Item");
     }
 }

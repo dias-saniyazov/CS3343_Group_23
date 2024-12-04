@@ -282,7 +282,7 @@ public class MemberApplication extends ClientApplication{
             } catch(InvalidInputException e){
                 System.out.println(e.getMessage());
                 continue;
-            } // Consume newline
+            }
             List<MenuItem> menu = dbController.viewMenu();
             MenuItem selectedItem = null;
             for (MenuItem item : menu) {

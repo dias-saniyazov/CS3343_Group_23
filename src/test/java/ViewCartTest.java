@@ -71,7 +71,6 @@ public class ViewCartTest {
 
     @After
     public void tearDown() {
-        dbController.removeMember("testUser");
         dbController.removeNewMenuItem("TestItem1");
         dbController.removeNewMenuItem("TestItem2");
     }

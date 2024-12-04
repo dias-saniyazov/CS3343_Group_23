@@ -14,19 +14,19 @@ public class Payment {
     }
 
     // Getters and setters
-    public String getPaymentType() {
-        return paymentType;
-    }
+    // public String getPaymentType() {
+    //     return paymentType;
+    // }
 
-    public void setPaymentType(String paymentType) {
-        this.paymentType = paymentType;
-    }
-    @Override
-    public String toString() {
-        return "Payment{" +
-                "paymentType='" + paymentType + '\'' +
-                '}';
-    }
+    // public void setPaymentType(String paymentType) {
+    //     this.paymentType = paymentType;
+    // }
+    // @Override
+    // public String toString() {
+    //     return "Payment{" +
+    //             "paymentType='" + paymentType + '\'' +
+    //             '}';
+    // }
     public boolean makePaymentWithBalance(Member member, float totalCost) {
         DBController dbController = DBController.getInstance();
         if (member.getBalance() >= totalCost) {

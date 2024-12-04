@@ -61,7 +61,7 @@ public class ViewOrdersTest {
 
     @After
     public void tearDown() {
-        dbController.removeMember("testUser");
+        //dbController.removeMember("testUser");
         dbController.removeNewMenuItem("TestItem1");
         dbController.removeNewMenuItem("TestItem2");
     }

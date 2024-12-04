@@ -61,7 +61,6 @@ public class CheckoutTest {
 
     @After
     public void removeTestData() {
-        dbController.removeMember("testUser");
         dbController.removeNewMenuItem("TestItem1");
         dbController.removeNewMenuItem("TestItem2");
     }

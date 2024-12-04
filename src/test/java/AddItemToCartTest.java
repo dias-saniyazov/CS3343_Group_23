@@ -26,7 +26,7 @@ public class AddItemToCartTest {
     @Before
     public void setUp() {
         dbController = DBController.getInstance();
-        member = dbController.validateMemberCredentials("agzhan", "1");
+        member = dbController.validateMemberCredentials("testUser", "password");
         memberApplication = new MemberApplication(member);
     }
 
@@ -57,6 +57,7 @@ public class AddItemToCartTest {
 
     @Test
     public void testAddItemToCartInvalidQuantity() throws InvalidInputException {
+        memberApplication.emptyCart();
         String input = "Kebab\n\n0\nKebab\n\n2\n";
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);

@@ -60,7 +60,7 @@ public class AdminApplication extends Application {
 
     }
 
-    void createMenuItem(Scanner scanner, DBController db) {
+    public void createMenuItem(Scanner scanner, DBController db) {
         System.out.println("Enter name of the item:");
         String name = scanner.nextLine();
         System.out.println("Enter description of the item:");
@@ -106,17 +106,6 @@ public class AdminApplication extends Application {
             throw new InputMismatchException("Input valid command number!");
         } 
 
-    }
-    private float getFloatInput(Scanner scanner) throws InvalidInputException{
-        try {
-            float amount = scanner.nextFloat();
-            if(amount < 0) throw new InvalidInputException("Amount cannot be negative.");
-            return amount; 
-        } catch (InputMismatchException e) {
-            System.out.println("Invalid input. Please enter a valid amount.");
-            //scanner.nextLine(); // Consume the invalid input
-            throw new InvalidInputException("Invalid input. Please enter a valid amount.");
-        }
     }
 
 
