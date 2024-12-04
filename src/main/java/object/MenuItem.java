@@ -63,7 +63,7 @@ public class MenuItem implements Observable {
         return price;
     }
 
-    public boolean isObserver(Member member){
-        return observers.contains(member);
+    public boolean isObserver(Observer observer){
+        return observers.contains(observer);
     }
 }

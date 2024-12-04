@@ -51,18 +51,16 @@ public class MemberApplication extends ClientApplication{
             if (choice == 1) {
                 command.viewMenu();
             } else if (choice == 2) {
-                searchItemByTags(scanner, dbController);
-            
+                command.searchItemByTags(scanner, dbController);
             } else if (choice == 3) {
                 addItemToCart(scanner, dbController);
-                
             } else if (choice == 4) {
-                viewCart(dbController);
+                viewCart();
             } else if (choice == 5) {
                 member.getCart().emptyCart();
                 System.out.println("Cart emptied.");
             } else if (choice == 6) {
-                makeOrder(dbController);
+                makeOrder();
                 
             } else if (choice == 7) {
                 printNotfications();
@@ -71,16 +69,16 @@ public class MemberApplication extends ClientApplication{
                 viewOrders(member);
             }
             else if(choice == 9){
-                topUp(scanner, dbController);
+                topUp(scanner);
             }
             else if (choice == 10) {
-                upgrade(dbController);
+                upgrade();
             }
             else if (choice == 11){
-                downgrade(dbController);
+                downgrade();
             }
             else if(choice == 12){
-                printPrimiumInfo(); 
+                printPremiumInfo(); 
             }
             else if(choice == 13){
                 printMemberInfo();
@@ -90,7 +88,8 @@ public class MemberApplication extends ClientApplication{
             }
         }
     }
-    void topUp(Scanner scanner, DBController dbController){
+    void topUp(Scanner scanner){
+        DBController dbController = DBController.getInstance();
         System.out.println("Enter amount to top up:");
         try {
             float amount = getFloatInput(scanner);
@@ -103,7 +102,8 @@ public class MemberApplication extends ClientApplication{
             System.out.println(e.getMessage());
         }
     }
-    void downgrade(DBController dbController){
+    void downgrade(){
+        DBController dbController = DBController.getInstance();
         if (member.getMemberState() == MembershipState.STANDARD) {
             System.out.println("You are already a standard member.");
         } else {
@@ -114,7 +114,8 @@ public class MemberApplication extends ClientApplication{
             }
         }
     }
-    void makeOrder(DBController dbController){
+    void makeOrder(){
+        DBController dbController = DBController.getInstance();
         PaymentController paymentController = new PaymentController(dbController);
         boolean isOrderCompleted = paymentController.checkout(member, member.getCart());
         if (isOrderCompleted) {
@@ -123,7 +124,8 @@ public class MemberApplication extends ClientApplication{
             System.out.println("Failed to complete order.");
         }
     }
-    void viewCart(DBController dbController){
+    public void viewCart(){
+        DBController dbController = DBController.getInstance();
         System.out.println("********** CART ************");
         Cart cart = member.getCart();
         if (cart.getItems().isEmpty()) {
@@ -154,7 +156,7 @@ public class MemberApplication extends ClientApplication{
         System.out.println("Membership: " + member.getMemberState());
         System.out.println("****************************");
     }
-    void printPrimiumInfo(){
+    void printPremiumInfo(){
         System.out.println("****************************");
         System.out.println("Premium Membership Information:");
         System.out.println("1. Premium members get 10% off on all orders.");
@@ -173,7 +175,8 @@ public class MemberApplication extends ClientApplication{
         }
     }
 
-    void upgrade(DBController dbController){
+    void upgrade(){
+        DBController dbController = DBController.getInstance();
         if (member.getMemberState() == MembershipState.PREMIUM) {
             System.out.println("You are already a premium member.");
         } else {
@@ -197,26 +200,6 @@ public class MemberApplication extends ClientApplication{
             System.out.println("Order created successfully!");
         }
         return success;
-    }
-
-    void searchItemByTags(Scanner scanner, DBController dbController) {
-        System.out.println("Enter tags (comma separated):");
-        scanner.nextLine(); // Consume newline
-        String tagsStr = scanner.nextLine();
-        String[] tagsArr = tagsStr.split(",");
-        List<String> tags = Arrays.asList(tagsArr);
-        List<MenuItem> menu = dbController.viewMenu();
-        System.out.println("Items with tags: " + tags);
-        boolean found = false;
-        for (MenuItem item : menu) {
-            if (item.getTags().containsAll(tags)) {
-                System.out.println(item.getName() + " - Price: " + item.getPrice());
-                found = true;
-            }
-        }
-        if (!found) {
-            System.out.println("No items found with tags: " + tags);
-        }
     }
 
     void viewOrders(Member member) {

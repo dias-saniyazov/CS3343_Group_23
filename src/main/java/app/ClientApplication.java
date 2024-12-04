@@ -1,11 +1,16 @@
 package main.java.app;
+import java.util.Arrays;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 import main.java.exception.InvalidInputException;
+import main.java.object.MenuItem;
 import main.java.service.CommandService;
 
 public class ClientApplication extends Application {
 
+    public ClientApplication() {}
+    
     @Override
     public void start() {
         DBController dbController = DBController.getInstance();
@@ -16,11 +21,11 @@ public class ClientApplication extends Application {
             System.out.println("1. Log In");
             System.out.println("2. Register");
             System.out.println("3. View Menu");
-            System.out.println("4. Exit");
+            System.out.println("4. Search items by tags");
+            System.out.println("5. Exit");
             int choice;
             try{
-                choice = getIntInput(scanner, 4);
-                scanner.nextLine();  // Consume newline
+                choice = command.getIntInput(scanner, 5);
             } catch(Exception e){
                 scanner.nextLine();  // Consume newline
                 System.out.println(e.getMessage());
@@ -33,23 +38,13 @@ public class ClientApplication extends Application {
                 command.register();
             } else if (choice == 3) {
                 command.viewMenu();
-            }
-             else if (choice == 4) {
+            } else if (choice == 4) {
+                command.searchItemByTags(scanner, dbController);
+            } else if (choice == 5) {
                 break;
             }
             
         }
         scanner.close();
     }
-    
-    private int getIntInput(Scanner scanner, int num) throws InvalidInputException{
-        try {
-            int next = scanner.nextInt();
-            if(next > num || next <= 0) throw new InvalidInputException(num);
-            return next;
-        } catch (InputMismatchException e) {
-            throw new InputMismatchException("Input valid command number!");
-        }
-    }
-    
 }

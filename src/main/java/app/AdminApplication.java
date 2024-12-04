@@ -39,7 +39,7 @@ public class AdminApplication extends Application {
             }
             scanner.nextLine();
             if (choice == 1) {
-                createMenuItem(scanner, db);
+                createMenuItem(scanner);
             }
             else if (choice == 2) {
                 command.viewMenu();
@@ -60,7 +60,8 @@ public class AdminApplication extends Application {
 
     }
 
-    public void createMenuItem(Scanner scanner, DBController db) {
+    public void createMenuItem(Scanner scanner) {
+        DBController db = DBController.getInstance();
         System.out.println("Enter name of the item:");
         String name = scanner.nextLine();
         System.out.println("Enter description of the item:");
@@ -99,7 +100,7 @@ public class AdminApplication extends Application {
     }
 
 
-    void viewOrders() {
+    public void viewOrders() {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("%-10s %-10s %-20s %-50s %-10s\n", "orderID", "memberID", "orderTime", "items", "Total"));
         DBController db = DBController.getInstance();

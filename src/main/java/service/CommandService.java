@@ -1,5 +1,6 @@
 package main.java.service;
 
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -110,13 +111,34 @@ public class CommandService{
         }
     }
 
-    private int getIntInput(Scanner scanner, int num) throws InvalidInputException{
+    public int getIntInput(Scanner scanner, int num) throws InvalidInputException{
         try {
             int next = scanner.nextInt();
             if(next > num || next <= 0) throw new InvalidInputException(num);
             return next;
         } catch (InputMismatchException e) {
             throw new InputMismatchException("Input valid command number!");
+        }
+    }
+
+    public void searchItemByTags(Scanner scanner) {
+        DBController dbController = DBController.getInstance();
+        System.out.println("Enter tags (comma separated):");
+        scanner.nextLine(); // Consume newline
+        String tagsStr = scanner.nextLine();
+        String[] tagsArr = tagsStr.split(",");
+        List<String> tags = Arrays.asList(tagsArr);
+        List<MenuItem> menu = dbController.viewMenu();
+        System.out.println("Items with tags: " + tags);
+        boolean found = false;
+        for (MenuItem item : menu) {
+            if (item.getTags().containsAll(tags)) {
+                System.out.println(item.getName() + " - Price: " + item.getPrice());
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No items found with tags: " + tags);
         }
     }
 }
