@@ -9,7 +9,6 @@ import main.java.user.MembershipState;
 import main.java.service.CommandService;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,7 +16,6 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
 
 public class LoginTest {
     private CommandService commandService;
